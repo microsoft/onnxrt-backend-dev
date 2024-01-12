@@ -264,7 +264,7 @@ class TestLlama(ExtTestCase):
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     def test_ort_llama_decoder(self):
-        from experimental_experiment.torch_helper.llama_helper import get_llama_decoder
+        from onnxrt_backend_dev.llama.llama_helper import get_llama_decoder
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_decoder(input_dims=input_dims)
@@ -279,7 +279,7 @@ class TestLlama(ExtTestCase):
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     def test_ort_llama_decoder_backward(self):
-        from experimental_experiment.torch_helper.llama_helper import get_llama_decoder
+        from onnxrt_backend_dev.llama.llama_helper import get_llama_decoder
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_decoder(input_dims=input_dims)
@@ -294,7 +294,7 @@ class TestLlama(ExtTestCase):
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     def test_ort_llama_attention(self):
-        from experimental_experiment.torch_helper.llama_helper import (
+        from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_attention,
         )
 
@@ -311,7 +311,7 @@ class TestLlama(ExtTestCase):
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     def test_ort_llama_attention_backward(self):
-        from experimental_experiment.torch_helper.llama_helper import (
+        from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_attention,
         )
 
@@ -329,7 +329,7 @@ class TestLlama(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     def test_ort_llama_model_nofullgraph(self):
-        from experimental_experiment.torch_helper.llama_helper import (
+        from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
 
@@ -349,7 +349,7 @@ class TestLlama(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     def test_ort_llama_model_backward_nofullgraph(self):
-        from experimental_experiment.torch_helper.llama_helper import (
+        from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
 
