@@ -2,11 +2,9 @@ name: Documentation and Code Coverage
 
 on:
   push:
+    branches: [main]
   pull_request:
-    types:
-      - closed
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   run:
@@ -56,8 +54,8 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Install
-        run: python setup.py install
+      #- name: Install
+      #  run: python setup.py install
 
       - name: Copy license, changelogs
         run: |
@@ -65,7 +63,9 @@ jobs:
           cp CHANGELOGS* ./docs
 
       - name: Documentation
-        run: python -m sphinx ./docs ./dist/html -n -w doc.txt
+        run: |
+          export PYTHONPATH=.
+          python -m sphinx ./docs ./dist/html -n -w doc.txt
 
       - name: Summary
         run: cat doc.txt
