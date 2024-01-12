@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onnxrt-backend-dev"
+dynamic = ["version"]
+description = "Developping tools for torch/onnx"
+authors = [{ name = "Microsoft Corporation", email = "onnx@microsoft.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: POSIX",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "License :: OSI Approved :: MIT License",
+]
+dependencies = ["numpy", "onnx", "onnx-script", "torch"]
+
+[tool.setuptools.packages.find]
+include = ["onnxrt_backend_dev*"]
+
+[tool.mypy]
+ignore_missing_imports = true
+packages = ["onnxrt_backend_dev"]
+exclude = [
+    "^docs/examples",  # skips examples in the documentation
+    "^tests",  # skips unit tests
+    "^build",  # skips build
+    "^dist",  # skips dist
+]
+
+[[tool.mypy.overrides]]
+module = ["onnxrt_backend_dev.args"]
+disable_error_code = ["index"]
+
+[[tool.mypy.overrides]]
+module = ["onnxrt_backend_dev.ext_test_case"]
+disable_error_code = ["override"]
+
+[[tool.mypy.overrides]]
+module = ["onnxrt_backend_dev.monitoring.profiling"]
+disable_error_code = ["assignment", "attr-defined", "list-item", "var-annotated"]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".eggs",
+    ".git",
+    "build",
+    "dist",
+]
+
+# Same as Black.
+line-length = 88
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+"docs/examples/plot_first_example.py" = ["E402", "F811"]
