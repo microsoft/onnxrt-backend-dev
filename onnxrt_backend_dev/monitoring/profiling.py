@@ -643,7 +643,8 @@ def profile2graph(
         <https://docs.python.org/3/library/profile.html#pstats.Stats>`_
     :param clean_text: function to clean function names
     :param verbose: verbosity
-    :return: an instance of class @see cl ProfileNode
+    :return: an instance of :class:`ProfileNode
+        <onnxrt_backend_dev.monitoring.profiling.ProfileNode>`
 
     :epkg:`pyinstrument` has a nice display to show
     time spent and call stack at the same time. This function

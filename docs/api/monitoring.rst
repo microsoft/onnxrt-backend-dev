@@ -28,11 +28,17 @@ MemorySpy
 Monitor
 +++++++
 
-.. autoclass:: onnxrt_backend_dev.monitoring.monitoring.Monitor
+.. autoclass:: onnxrt_backend_dev.monitoring.memory_peak.Monitor
     :members:
 
 Profiling
 =========
+
+ProfileNode
++++++++++++
+
+.. autoclass:: onnxrt_backend_dev.monitoring.profiling.ProfileNode
+    :members:
 
 profile
 +++++++

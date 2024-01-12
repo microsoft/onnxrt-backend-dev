@@ -107,6 +107,7 @@ epkg_dictionary = {
     "cProfile.Profile": "https://docs.python.org/3/library/profile.html#profile.Profile",
     "DOT": "https://graphviz.org/doc/info/lang.html",
     "JIT": "https://en.wikipedia.org/wiki/Just-in-time_compilation",
+    "JSON": "https://en.wikipedia.org/wiki/JSON",
     "onnx": "https://onnx.ai/onnx/",
     "onnx.helper": "https://onnx.ai/onnx/api/helper.html",
     "ONNX": "https://onnx.ai/",
