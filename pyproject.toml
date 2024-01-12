@@ -23,7 +23,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "License :: OSI Approved :: MIT License",
 ]
-dependencies = ["numpy", "onnx", "onnx-script", "torch"]
+dependencies = ["onnx"]
 
 [tool.setuptools.packages.find]
 include = ["onnxrt_backend_dev*"]
