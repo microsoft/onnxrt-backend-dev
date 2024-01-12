@@ -215,7 +215,7 @@ def start_spying_on(
 
     .. code-block:: python
 
-        from experimental_experiment.memory_peak import start_spying_on
+        from onnxrt_backend_dev.monitoring.memory_peak import start_spying_on
 
         p = start_spying_on()
         # ...
