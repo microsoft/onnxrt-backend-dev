@@ -43,7 +43,7 @@ def get_llama_decoder(
             (decoder_output,) = self.decoder(
                 hidden_states, attention_mask, position_ids
             )
-            return decoder_output
+            return decoder_output.to_tuple()
 
     def generate_example_inputs(batch: int, seq: int, hidden_size: int):
         # shape: batch x seq x hidden_size
@@ -140,6 +140,7 @@ def get_llama_model(
     num_attention_heads=2,
     hidden_dropout_prob=0.0,
     attention_dropout_prob=0.0,
+    _attn_implementation=None,
 ):
     import torch
     from transformers import LlamaConfig
@@ -155,6 +156,8 @@ def get_llama_model(
         hidden_dropout_prob=0.0,
         attention_dropout_prob=0.0,
     )
+    if _attn_implementation:
+        config._attn_implementation = _attn_implementation
 
     class LlamaModelWrapper(torch.nn.Module):
         def __init__(self, config):
