@@ -82,5 +82,6 @@ def run_benchmark(
         metrics["ERROR"] = serr
         metrics["OUTPUT"] = sout
         metrics.update(machine)
+        metrics["CMD"] = f"[{' '.join(cmd)}]"
         data.append(metrics)
     return data

@@ -66,7 +66,11 @@ print("warmup")
 start_time = time.perf_counter()
 is_cuda = args.device == "cuda"
 for i in range(args.warmup):
-    result = compiled_model(*example_args_collection[i])
+    if is_cuda:
+        inputs = [t.to("cuda") for t in example_args_collection[i]]
+    else:
+        inputs = example_args_collection[i]
+    result = compiled_model(*inputs)
     dummy_loss = torch.ones_like(result[0], memory_format=torch.contiguous_format)
     result[0].backward(dummy_loss)
     if is_cuda:
@@ -77,8 +81,12 @@ print(f"warmup done in {warmup_time}s.")
 print("measures")
 times = []
 for example_inputs in example_args_collection[args.warmup :]:
+    if is_cuda:
+        inputs = [t.to("cuda") for t in example_inputs]
+    else:
+        inputs = example_inputs
     start_time = time.perf_counter()
-    result = compiled_model(*example_inputs)
+    result = compiled_model(*inputs)
     dummy_loss = torch.ones_like(result[0], memory_format=torch.contiguous_format)
     result[0].backward(dummy_loss)
     if is_cuda:
