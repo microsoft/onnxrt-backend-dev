@@ -11,11 +11,11 @@ def get_machine() -> Dict[str, Union[str, int, float]]:
     Returns the machine specification.
     """
     cpu = dict(
-        machine=platform.machine(),
-        processor=platform.processor(),
-        version=sys.version,
-        cpu=multiprocessing.cpu_count(),
-        executable=sys.executable,
+        machine=str(platform.machine()),
+        processor=str(platform.processor()),
+        version=str(sys.version),
+        cpu=int(multiprocessing.cpu_count()),
+        executable=str(sys.executable),
     )
     try:
         import torch.cuda
@@ -23,8 +23,9 @@ def get_machine() -> Dict[str, Union[str, int, float]]:
         return cpu
 
     cpu["has_cuda"] = torch.cuda.is_available()
-    cpu["capability"] = torch.cuda.get_device_capability(0)
-    cpu["device_name"] = torch.cuda.get_device_name(0)
+    if cpu["has_cuda"]:
+        cpu["capability"] = torch.cuda.get_device_capability(0)
+        cpu["device_name"] = torch.cuda.get_device_name(0)
     return cpu
 
 
@@ -42,13 +43,13 @@ def _extract_metrics(text: str) -> Dict[str, str]:
     reg = re.compile(":(.*?),(.*.?);")
     res = reg.findall(text)
     if len(res) == 0:
-        raise []
+        return {}
     return dict(res)
 
 
 def run_benchmark(
     script_name: str, configs: List[Dict[str, Union[str, int, float]]], verbose: int = 0
-) -> List[Dict[str, Union[float, int, str]]]:
+) -> List[Dict[str, str]]:
     """
     Runs a script multiple times and extract information from the output
     following the pattern ``:<metric>,<value>;``.

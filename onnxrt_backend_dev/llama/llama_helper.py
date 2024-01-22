@@ -43,7 +43,7 @@ def get_llama_decoder(
             (decoder_output,) = self.decoder(
                 hidden_states, attention_mask, position_ids
             )
-            return decoder_output.to_tuple()
+            return decoder_output
 
     def generate_example_inputs(batch: int, seq: int, hidden_size: int):
         # shape: batch x seq x hidden_size
@@ -167,7 +167,7 @@ def get_llama_model(
         def forward(self, input_ids, attention_mask):
             assert attention_mask is not None
             model_output = self.model(input_ids, attention_mask=attention_mask)
-            return model_output
+            return model_output.to_tuple()
 
     def generate_example_inputs(batch: int, seq: int, vocab_size: int):
         input_ids = ids_tensor([batch, seq], vocab_size)
