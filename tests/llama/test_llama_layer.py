@@ -78,6 +78,7 @@ class TestLlama(ExtTestCase):
             else:
                 if hasattr(baseline_result, "to_tuple"):
                     baseline_result = baseline_result.to_tuple()
+                if hasattr(result, "to_tuple"):
                     result = result.to_tuple()
                 assert len(baseline_result) == len(
                     result
@@ -368,5 +369,5 @@ class TestLlama(ExtTestCase):
 
 
 if __name__ == "__main__":
-    TestLlama().test_ort_llama_model_backward_nofullgraph()
+    # TestLlama().test_ort_llama_model_backward_nofullgraph()
     unittest.main(verbosity=2)
