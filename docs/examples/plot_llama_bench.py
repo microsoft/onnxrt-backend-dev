@@ -55,26 +55,32 @@ fig, ax = plt.subplots(2, 2, figsize=(10, 6))
 piv = dfs[dfs.device == "cpu"].pivot(
     index="num_hidden_layers", columns="backend", values="warmup_time"
 )
-piv.plot(title="llama with dort on cpu\nwarmup time", ax=ax[0, 0])
+if len(piv) > 0:
+    piv.plot(title="llama with dort on cpu\nwarmup time", ax=ax[0, 0])
 
 piv = dfs[dfs.device == "cuda"].pivot(
     index="num_hidden_layers", columns="backend", values="warmup_time"
 )
-piv.plot(title="llama with dort on cuda\nwarmup time", ax=ax[0, 1])
+if len(piv) > 0:
+    piv.plot(title="llama with dort on cuda\nwarmup time", ax=ax[0, 1])
 
 piv = dfs[dfs.device == "cpu"].pivot(
     index="num_hidden_layers", columns="backend", values="time"
 )
-piv.plot(
-    title=f"llama with dort on cpu\ntraining time for {repeat} iterations", ax=ax[1, 0]
-)
+if len(piv) > 0:
+    piv.plot(
+        title=f"llama with dort on cpu\ntraining time for {repeat} iterations",
+        ax=ax[1, 0],
+    )
 
 piv = dfs[dfs.device == "cuda"].pivot(
     index="num_hidden_layers", columns="backend", values="time"
 )
-piv.plot(
-    title=f"llama with dort on cuda\ntraining time for {repeat} iterations", ax=ax[1, 1]
-)
+if len(piv) > 0:
+    piv.plot(
+        title=f"llama with dort on cuda\ntraining time for {repeat} iterations",
+        ax=ax[1, 1],
+    )
 
 fig.tight_layout()
 fig.savefig("plot_llama_bench.png")
