@@ -43,6 +43,10 @@ module = ["onnxrt_backend_dev.args"]
 disable_error_code = ["index"]
 
 [[tool.mypy.overrides]]
+module = ["onnxrt_backend_dev.bench_run"]
+disable_error_code = ["arg-type"]
+
+[[tool.mypy.overrides]]
 module = ["onnxrt_backend_dev.ext_test_case"]
 disable_error_code = ["override"]
 

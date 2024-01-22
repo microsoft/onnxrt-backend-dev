@@ -3,14 +3,14 @@ import platform
 import re
 import subprocess
 import sys
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 
-def get_machine() -> Dict[str, Union[str, int, float]]:
+def get_machine() -> Dict[str, Union[str, int, float, Tuple[int, int]]]:
     """
     Returns the machine specification.
     """
-    cpu = dict(
+    cpu: Dict[str, Union[str, int, float, Tuple[int, int]]] = dict(
         machine=str(platform.machine()),
         processor=str(platform.processor()),
         version=str(sys.version),
@@ -22,10 +22,10 @@ def get_machine() -> Dict[str, Union[str, int, float]]:
     except ImportError:
         return cpu
 
-    cpu["has_cuda"] = torch.cuda.is_available()
+    cpu["has_cuda"] = bool(torch.cuda.is_available())
     if cpu["has_cuda"]:
         cpu["capability"] = torch.cuda.get_device_capability(0)
-        cpu["device_name"] = torch.cuda.get_device_name(0)
+        cpu["device_name"] = str(torch.cuda.get_device_name(0))
     return cpu
 
 
@@ -49,7 +49,7 @@ def _extract_metrics(text: str) -> Dict[str, str]:
 
 def run_benchmark(
     script_name: str, configs: List[Dict[str, Union[str, int, float]]], verbose: int = 0
-) -> List[Dict[str, str]]:
+) -> List[Dict[str, Union[str, int, float, Tuple[int, int]]]]:
     """
     Runs a script multiple times and extract information from the output
     following the pattern ``:<metric>,<value>;``.
@@ -67,7 +67,7 @@ def run_benchmark(
         loop = configs
 
     machine = get_machine()
-    data = []
+    data: List[Dict[str, Union[str, int, float, Tuple[int, int]]]] = []
     for config in loop:
         cmd = _cmd_line(script_name, **config)
 
