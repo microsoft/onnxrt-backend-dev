@@ -6,6 +6,7 @@ Measure LLAMA speed
 import pandas
 import matplotlib.pyplot as plt
 import itertools
+import torch
 from onnxrt_backend_dev.ext_test_case import unit_test_going
 from onnxrt_backend_dev.bench_run import run_benchmark, get_machine
 
@@ -16,7 +17,9 @@ machine = {} if unit_test_going() else get_machine()
 if machine.get("capability", (0, 0)) >= (7, 0):
     configs = []
     for backend, device, num_hidden_layers in itertools.product(
-        ["inductor", "ort"], ["cpu", "cuda"], [1, 2]
+        ["inductor", "ort"],
+        ["cpu", "cuda"] if torch.cuda.is_available() else ["cpu"],
+        [1, 2],
     ):
         configs.append(
             dict(
