@@ -74,16 +74,23 @@ def run_benchmark(
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = p.communicate()
         out, err = res
-        if b"ONNXRuntimeError" in err or b"ONNXRuntimeError" in out:
-            raise RuntimeError(
-                f"Unable to continue with config {config} due to the "
-                f"following error\n{err.decode('utf-8', errors='ignore')}"
-                f"\n----OUTPUT--\n{out.decode('utf-8', errors='ignore')}"
-            )
-
         sout = out.decode("utf-8", errors="ignore")
         serr = err.decode("utf-8", errors="ignore")
+
+        if "ONNXRuntimeError" in serr or "ONNXRuntimeError" in sout:
+            raise RuntimeError(
+                f"Unable to continue with config {config} due to the "
+                f"following error\n{serr}"
+                f"\n----OUTPUT--\n{sout}"
+            )
+
         metrics = _extract_metrics(sout)
+        if "time" not in metrics:
+            raise RuntimeError(
+                f"Unable (2) to continue with config {config} due to the "
+                f"following error\n{serr}"
+                f"\n----OUTPUT--\n{sout}"
+            )
         metrics.update(config)
         metrics["ERROR"] = serr
         metrics["OUTPUT"] = sout
