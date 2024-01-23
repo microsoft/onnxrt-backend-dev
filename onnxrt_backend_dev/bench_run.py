@@ -85,7 +85,7 @@ def run_benchmark(
             )
 
         metrics = _extract_metrics(sout)
-        if "time" not in metrics:
+        if "time" not in metrics and "metric1" not in metrics:
             raise RuntimeError(
                 f"Unable (2) to continue with config {config} due to the "
                 f"following error\n{serr}"
