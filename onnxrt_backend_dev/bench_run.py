@@ -74,7 +74,7 @@ def run_benchmark(
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = p.communicate()
         out, err = res
-        if b"ONNXRuntimeError" in res or b"ONNXRuntimeError" in out:
+        if b"ONNXRuntimeError" in err or b"ONNXRuntimeError" in out:
             raise RuntimeError(
                 f"Unable to continue with config {config} due to the "
                 f"following error\n{err.decode('utf-8', errors='ignore')}"
