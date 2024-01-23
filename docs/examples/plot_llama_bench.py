@@ -44,7 +44,10 @@ print(df)
 ################################
 # More simple
 
-dfs = df[["backend", "num_hidden_layers", "time", "device", "warmup_time"]]
+try:
+    dfs = df[["backend", "num_hidden_layers", "time", "device", "warmup_time"]]
+except KeyError as e:
+    raise RuntimeError(f"Missing columns in {dfs.columns}\n{dfs.head()}") from e
 print(dfs)
 
 ###############################
