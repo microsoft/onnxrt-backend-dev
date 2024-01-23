@@ -6,6 +6,10 @@ import sys
 from typing import Dict, List, Tuple, Union
 
 
+class BenchmarkError(RuntimeError):
+    pass
+
+
 def get_machine() -> Dict[str, Union[str, int, float, Tuple[int, int]]]:
     """
     Returns the machine specification.
@@ -85,11 +89,10 @@ def run_benchmark(
             )
 
         metrics = _extract_metrics(sout)
-        if "time" not in metrics and "metric1" not in metrics:
-            raise RuntimeError(
-                f"Unable (2) to continue with config {config} due to the "
-                f"following error\n{serr}"
-                f"\n----OUTPUT--\n{sout}"
+        if len(metrics) == 0:
+            raise BenchmarkError(
+                f"Unable (2) to continue with config {config}, no metric was "
+                f"collected.\n--ERROR--\n{serr}\n--OUTPUT--\n{sout}"
             )
         metrics.update(config)
         metrics["ERROR"] = serr
