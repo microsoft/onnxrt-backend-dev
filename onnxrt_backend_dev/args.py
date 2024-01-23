@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional
 
 
 def get_parsed_args(
@@ -14,7 +14,7 @@ def get_parsed_args(
     tries: int = 2,
     expose: Optional[str] = None,
     args: Optional[List[str]] = None,
-    **kwargs: Dict[str, Union[int, Tuple[Union[int, str, float], str]]],
+    **kwargs,
 ) -> Namespace:
     """
     Returns parsed arguments for examples in this package.

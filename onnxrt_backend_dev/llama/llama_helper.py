@@ -140,6 +140,7 @@ def get_llama_model(
     num_attention_heads=2,
     hidden_dropout_prob=0.0,
     attention_dropout_prob=0.0,
+    _attn_implementation=None,
 ):
     import torch
     from transformers import LlamaConfig
@@ -155,6 +156,8 @@ def get_llama_model(
         hidden_dropout_prob=0.0,
         attention_dropout_prob=0.0,
     )
+    if _attn_implementation:
+        config._attn_implementation = _attn_implementation
 
     class LlamaModelWrapper(torch.nn.Module):
         def __init__(self, config):
@@ -164,7 +167,7 @@ def get_llama_model(
         def forward(self, input_ids, attention_mask):
             assert attention_mask is not None
             model_output = self.model(input_ids, attention_mask=attention_mask)
-            return model_output
+            return model_output.to_tuple()
 
     def generate_example_inputs(batch: int, seq: int, vocab_size: int):
         input_ids = ids_tensor([batch, seq], vocab_size)

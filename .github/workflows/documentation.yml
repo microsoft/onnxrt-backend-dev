@@ -41,10 +41,8 @@ jobs:
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
 
-      - name: Generate coverage report
+      - name: Unit test and Coverage report
         run: |
-          pip install pytest
-          pip install pytest-cov
           export PYTHONPATH=.
           pytest --cov=./onnxrt_backend_dev/ --cov-report=xml --durations=10 --ignore-glob=**LONG*.py --ignore-glob=**notebook*.py
           export PYTHONPATH=
