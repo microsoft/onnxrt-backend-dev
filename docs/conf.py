@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 from sphinx_runpython.github_link import make_linkcode_resolve
 from sphinx_runpython.conf_helper import has_dvipng, has_dvisvgm
@@ -126,3 +127,13 @@ epkg_dictionary = {
     "torch": "https://pytorch.org/docs/stable/torch.html",
     "torch.onnx": "https://pytorch.org/docs/stable/onnx.html",
 }
+
+
+def setup(app):
+    this = os.path.dirname(__file__)
+    to_copy = [
+        os.path.join(this, "..", "CHANGELOGS.rst"),
+        os.path.join(this, "..", "LICENSE"),
+    ]
+    for name in to_copy:
+        shutil.copy(name, this)

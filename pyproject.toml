@@ -54,6 +54,10 @@ disable_error_code = ["override"]
 module = ["onnxrt_backend_dev.monitoring.profiling"]
 disable_error_code = ["assignment", "attr-defined", "list-item", "var-annotated"]
 
+[[tool.mypy.overrides]]
+module = ["onnxrt_backend_dev.plotting.memory"]
+disable_error_code = ["name-defined"]
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [

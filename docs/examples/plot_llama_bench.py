@@ -1,4 +1,6 @@
 """
+.. _l-plot-llama-bench:
+
 Measure LLAMA speed
 ===================
 """

@@ -67,7 +67,7 @@ def get_parsed_args(
             parser.add_argument(
                 "-w",
                 "--warmup",
-                help=f"number of times to repeat the measure, default is {warmup}",
+                help=f"number of iterations to warmup, includes the settings, default is {warmup}",
                 type=int,
                 default=warmup,
             )
