@@ -8,3 +8,5 @@ API
 
     monitoring
     tests
+    plotting
+    benchmarks

@@ -1,14 +1,42 @@
-from typing import List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 
 def memory_peak_plot(
-    df1,
+    df1: Union[List[Dict[str, Any]], "pandas.DataFrame"],  # noqa: F821
     key: Union[str, Tuple[str, ...]] = "export",
     suptitle: str = "Memory Peak",
     bars: Optional[Union[float, List[float]]] = None,
-    figsize: Tuple[int, ...] = (10, 6),
+    figsize: Tuple[int, int] = (10, 6),
     fontsize: Optional[int] = 6,
-):
+) -> "matplotlib.axes.Axes":  # noqa: F821
+    """
+    Draws a plot showing data coming from a memory profiling.
+    See function :func:`onnxrt_backend_dev.monitoring.memory_peak.start_spying_on`.
+
+    :param df1: data
+    :param key: used to index figures
+    :param subtitle: title for the whole graph
+    :param bars: horizontal bars to show thresholds or limits
+    :param figsize: figure size
+    :param fontsize: font size
+    :return: axes
+
+    .. plot::
+
+        import matplotlib.pyplot as plt
+        from onnxrt_backend_dev.plotting.data import memory_peak_plot_data
+        from onnxrt_backend_dev.plotting.memory import memory_peak_plot
+
+        data = memory_peak_plot_data()
+        ax = memory_peak_plot(
+            data,
+            suptitle="nice",
+            bars=[55, 110],
+            key=("export", "aot", "compute"),
+            figsize=(18 * 2, 7 * 2),
+        )
+        plt.show()
+    """
     import matplotlib.pyplot as plt
 
     if isinstance(df1, (dict, list)):
