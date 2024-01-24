@@ -1,0 +1,709 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="tests" href="tests.html" /><link rel="prev" title="API" href="index.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>monitoring - onnxrt-backend-dev 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css?v=7f9a90b1" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">onnxrt-backend-dev 0.1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">onnxrt-backend-dev 0.1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html">plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html">benchmarks</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../auto_examples/index.html">Example gallery</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Example gallery</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_llama_bench.html">Measure LLAMA speed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_torch_export.html">Evaluate different ways to export a torch model to ONNX</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">More</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOGS.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="monitoring">
+<h1>monitoring<a class="headerlink" href="#monitoring" title="Link to this heading">#</a></h1>
+<section id="measuring-computing-time">
+<h2>Measuring Computing Time<a class="headerlink" href="#measuring-computing-time" title="Link to this heading">#</a></h2>
+<section id="measure-time">
+<h3>measure_time<a class="headerlink" href="#measure-time" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.benchmark.measure_time">
+<span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.benchmark.</span></span><span class="sig-name descname"><span class="pre">measure_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stmt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warmup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">div_by_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/benchmark.html#measure_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.benchmark.measure_time" title="Link to this definition">#</a></dt>
+<dd><p>Measures a statement and returns the results as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stmt</strong> – string or callable</p></li>
+<li><p><strong>context</strong> – variable to know in a dictionary</p></li>
+<li><p><strong>repeat</strong> – average over <em>repeat</em> experiment</p></li>
+<li><p><strong>number</strong> – number of executions in one row</p></li>
+<li><p><strong>warmup</strong> – number of iteration to do before starting the
+real measurement</p></li>
+<li><p><strong>div_by_number</strong> – divide by the number of executions</p></li>
+<li><p><strong>max_time</strong> – execute the statement until the total goes
+beyond this time (approximatively), <em>repeat</em> is ignored,
+<em>div_by_number</em> must be set to True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+<p>&lt;&lt;&lt;</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span>
+<span class="kn">from</span> <span class="nn">onnxrt_backend_dev.monitoring.benchmark</span> <span class="kn">import</span> <span class="n">measure_time</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">measure_time</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">cos</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>&gt;&gt;&gt;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="p">{</span><span class="s1">&#39;average&#39;</span><span class="p">:</span> <span class="mf">9.11999986783485e-08</span><span class="p">,</span>
+     <span class="s1">&#39;context_size&#39;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+     <span class="s1">&#39;deviation&#39;</span><span class="p">:</span> <span class="mf">2.56125002230228e-09</span><span class="p">,</span>
+     <span class="s1">&#39;max_exec&#39;</span><span class="p">:</span> <span class="mf">9.800000043469481e-08</span><span class="p">,</span>
+     <span class="s1">&#39;min_exec&#39;</span><span class="p">:</span> <span class="mf">8.799999704933726e-08</span><span class="p">,</span>
+     <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+     <span class="s1">&#39;repeat&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+     <span class="s1">&#39;ttime&#39;</span><span class="p">:</span> <span class="mf">9.11999986783485e-07</span><span class="p">,</span>
+     <span class="s1">&#39;warmup_time&#39;</span><span class="p">:</span> <span class="mf">9.40000018090359e-06</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://docs.python.org/3/library/timeit.html?timeit.Timer.repeat">Timer.repeat</a>
+for a better understanding of parameter <em>repeat</em> and <em>number</em>.
+The function returns a duration corresponding to
+<em>number</em> times the execution of the main statement.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="monitoring-memory">
+<h2>Monitoring Memory<a class="headerlink" href="#monitoring-memory" title="Link to this heading">#</a></h2>
+<section id="start-spying-on">
+<h3>start_spying_on<a class="headerlink" href="#start-spying-on" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.memory_peak.start_spying_on">
+<span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.memory_peak.</span></span><span class="sig-name descname"><span class="pre">start_spying_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuda</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy" title="onnxrt_backend_dev.monitoring.memory_peak.MemorySpy"><span class="pre">MemorySpy</span></a></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/memory_peak.html#start_spying_on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.memory_peak.start_spying_on" title="Link to this definition">#</a></dt>
+<dd><p>Starts the memory spy. The function starts another
+process spying on the one sent as an argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pid</strong> – process id to spy or the the current one.</p></li>
+<li><p><strong>delay</strong> – delay between two measures.</p></li>
+<li><p><strong>cuda</strong> – True or False to get memory for cuda devices</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">..</span> <span class="n">code</span><span class="o">-</span><span class="n">block</span><span class="p">::</span> <span class="n">python</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>from onnxrt_backend_dev.monitoring.memory_peak import start_spying_on</p>
+<p>p = start_spying_on()
+# …
+# code to measure
+# …
+stat = p.stop()
+print(stat)</p>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="memoryspy">
+<h3>MemorySpy<a class="headerlink" href="#memoryspy" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.memory_peak.MemorySpy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.memory_peak.</span></span><span class="sig-name descname"><span class="pre">MemorySpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuda</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/memory_peak.html#MemorySpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy" title="Link to this definition">#</a></dt>
+<dd><p>Information about the spy. It class method <cite>start</cite>.
+Method <cite>stop</cite> can be called to end the measure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pid</strong> – process id  of the process to spy on</p></li>
+<li><p><strong>delay</strong> – spy on every delay seconds</p></li>
+<li><p><strong>cuda</strong> – enable cuda monitoring</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.memory_peak.MemorySpy.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy" title="onnxrt_backend_dev.monitoring.memory_peak.MemorySpy"><span class="pre">MemorySpy</span></a></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/memory_peak.html#MemorySpy.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy.start" title="Link to this definition">#</a></dt>
+<dd><p>Starts another process and tells it to spy.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.memory_peak.MemorySpy.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/memory_peak.html#MemorySpy.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy.stop" title="Link to this definition">#</a></dt>
+<dd><p>Stops spying on.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="monitor">
+<h3>Monitor<a class="headerlink" href="#monitor" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.memory_peak.Monitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.memory_peak.</span></span><span class="sig-name descname"><span class="pre">Monitor</span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/memory_peak.html#Monitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.memory_peak.Monitor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+<section id="profiling">
+<h2>Profiling<a class="headerlink" href="#profiling" title="Link to this heading">#</a></h2>
+<section id="profilenode">
+<h3>ProfileNode<a class="headerlink" href="#profilenode" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.profiling.</span></span><span class="sig-name descname"><span class="pre">ProfileNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode" title="Link to this definition">#</a></dt>
+<dd><p>Graph structure to represent a profiling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – filename</p></li>
+<li><p><strong>line</strong> – line number</p></li>
+<li><p><strong>func_name</strong> – function name</p></li>
+<li><p><strong>nc1</strong> – number of calls 1</p></li>
+<li><p><strong>nc2</strong> – number of calls 2</p></li>
+<li><p><strong>tin</strong> – time spent in the function</p></li>
+<li><p><strong>tout</strong> – time spent in the function and in the sub functions</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.add_called_by">
+<span class="sig-name descname"><span class="pre">add_called_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pnode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode" title="onnxrt_backend_dev.monitoring.profiling.ProfileNode"><span class="pre">ProfileNode</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.add_called_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.add_called_by" title="Link to this definition">#</a></dt>
+<dd><p>This function is called by these lines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.add_calls_to">
+<span class="sig-name descname"><span class="pre">add_calls_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pnode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode" title="onnxrt_backend_dev.monitoring.profiling.ProfileNode"><span class="pre">ProfileNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_elements</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.add_calls_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.add_calls_to" title="Link to this definition">#</a></dt>
+<dd><p>This function calls this node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SortKey.LINE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.as_dict" title="Link to this definition">#</a></dt>
+<dd><p>Renders the results of a profiling interpreted with
+function &#64;fn profile2graph. It can then be loaded with
+a dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_node</strong> – display only the nodes for which
+this function returns True, if None, the default function
+removes built-in function with small impact</p></li>
+<li><p><strong>sort_key</strong> – sort sub nodes by…</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>rows</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.filter_node_">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filter_node_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.filter_node_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.filter_node_" title="Link to this definition">#</a></dt>
+<dd><p>Filters out node to be displayed by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> – node</p></li>
+<li><p><strong>info</strong> – if the node is called by a function,
+this dictionary can be used to overwrite the attributes
+held by the node</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean (True to keep, False to forget)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.get_root">
+<span class="sig-name descname"><span class="pre">get_root</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.get_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.get_root" title="Link to this definition">#</a></dt>
+<dd><p>Returns the root of the graph.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.key" title="Link to this definition">#</a></dt>
+<dd><p>Returns <cite>file:line</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SortKey.LINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.to_json" title="Link to this definition">#</a></dt>
+<dd><p>Renders the results of a profiling interpreted with
+function &#64;fn profile2graph as <a class="reference external" href="https://en.wikipedia.org/wiki/JSON">JSON</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_node</strong> – display only the nodes for which
+this function returns True, if None, the default function
+removes built-in function with small impact</p></li>
+<li><p><strong>sort_key</strong> – sort sub nodes by…</p></li>
+<li><p><strong>as_str</strong> – converts the json into a string</p></li>
+<li><p><strong>kwargs</strong> – see <a class="reference external" href="https://docs.python.org/3/library/json.html#json.dumps" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">json.dumps()</span></code></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>rows</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.ProfileNode.to_text">
+<span class="sig-name descname"><span class="pre">to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SortKey.LINE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fct_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#ProfileNode.to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.to_text" title="Link to this definition">#</a></dt>
+<dd><p>Prints the profiling to text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter_node</strong> – display only the nodes for which
+this function returns True, if None, the default function
+removes built-in function with small impact</p></li>
+<li><p><strong>sort_key</strong> – sort sub nodes by…</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>rows</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="profile">
+<h3>profile<a class="headerlink" href="#profile" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.profile">
+<span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.profiling.</span></span><span class="sig-name descname"><span class="pre">profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cumulative'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rootrem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/profile.html#pstats.Stats" title="(in Python v3.12)"><span class="pre">Stats</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/profile.html#pstats.Stats" title="(in Python v3.12)"><span class="pre">Stats</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.profile" title="Link to this definition">#</a></dt>
+<dd><p>Profiles the execution of a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fct</strong> – function to profile</p></li>
+<li><p><strong>sort</strong> – see <a class="reference external" href="https://docs.python.org/3/library/profile.html#pstats.Stats.sort_stats">sort_stats</a></p></li>
+<li><p><strong>rootrem</strong> – root to remove in filenames</p></li>
+<li><p><strong>as_df</strong> – return the results as a dataframe and not text</p></li>
+<li><p><strong>return_results</strong> – if True, return results as well
+(in the first position)</p></li>
+<li><p><strong>kwargs</strong> – additional parameters used to create the profiler,
+see <a class="reference external" href="https://docs.python.org/3/library/profile.html#profile.Profile">cProfile.Profile</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>raw results, statistics text dump (or dataframe is <em>as_df</em> is True)</p>
+</dd>
+</dl>
+<p>(<a class="reference download internal" download="" href="../_downloads/3e9f63ac0f68c07a31c68e09ec61b753/monitoring-1.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="../_downloads/0a84e41b9544754129575193548166b9/monitoring-1.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/1c417a0c84b4f92d4a34b67c2951e665/monitoring-1.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="../_downloads/c66a609f9cf889fed6613477936d6bd7/monitoring-1.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
+<figure class="align-default">
+<img alt="../_images/monitoring-1.png" class="plot-directive" src="../_images/monitoring-1.png" />
+</figure>
+</dd></dl>
+
+</section>
+<section id="profile2graph">
+<h3>profile2graph<a class="headerlink" href="#profile2graph" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="onnxrt_backend_dev.monitoring.profiling.profile2graph">
+<span class="sig-prename descclassname"><span class="pre">onnxrt_backend_dev.monitoring.profiling.</span></span><span class="sig-name descname"><span class="pre">profile2graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/profile.html#pstats.Stats" title="(in Python v3.12)"><span class="pre">Stats</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode" title="onnxrt_backend_dev.monitoring.profiling.ProfileNode"><span class="pre">ProfileNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/onnxrt_backend_dev/monitoring/profiling.html#profile2graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#onnxrt_backend_dev.monitoring.profiling.profile2graph" title="Link to this definition">#</a></dt>
+<dd><p>Converts profiling statistics into a graphs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ps</strong> – an instance of <a class="reference external" href="https://docs.python.org/3/library/profile.html#pstats.Stats">pstats</a></p></li>
+<li><p><strong>clean_text</strong> – function to clean function names</p></li>
+<li><p><strong>verbose</strong> – verbosity</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>an instance of <a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode" title="onnxrt_backend_dev.monitoring.profiling.ProfileNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProfileNode</span></code></a></p>
+</dd>
+</dl>
+<p><a class="reference external" href="https://github.com/joerick/pyinstrument">pyinstrument</a> has a nice display to show
+time spent and call stack at the same time. This function
+tries to replicate that display based on the results produced
+by module <a class="reference external" href="https://docs.python.org/3/library/profile.html#module-cProfile" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cProfile</span></code></a>. Here is an example.</p>
+<p>&lt;&lt;&lt;</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">onnxrt_backend_dev.monitoring.profiling</span> <span class="kn">import</span> <span class="n">profile</span><span class="p">,</span> <span class="n">profile2graph</span>
+
+
+<span class="k">def</span> <span class="nf">fct0</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fct1</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fct2</span><span class="p">():</span>
+    <span class="n">fct1</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">fct1</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fct3</span><span class="p">():</span>
+    <span class="n">fct0</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">fct1</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">fct4</span><span class="p">():</span>
+    <span class="n">fct2</span><span class="p">()</span>
+    <span class="n">fct3</span><span class="p">()</span>
+
+
+<span class="n">ps</span> <span class="o">=</span> <span class="n">profile</span><span class="p">(</span><span class="n">fct4</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">root</span><span class="p">,</span> <span class="n">nodes</span> <span class="o">=</span> <span class="n">profile2graph</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span> <span class="n">clean_text</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">to_text</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>&gt;&gt;&gt;</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fct1</span>                                                         <span class="o">--</span>  <span class="mi">3</span>  <span class="mi">3</span> <span class="o">--</span> <span class="mf">0.00004</span> <span class="mf">0.61213</span> <span class="o">--</span> <span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="n">fct1</span> <span class="p">(</span><span class="n">fct1</span><span class="p">)</span>
+        <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span>                             <span class="o">--</span>  <span class="mi">3</span>  <span class="mi">3</span> <span class="o">--</span> <span class="mf">0.61209</span> <span class="mf">0.61209</span> <span class="o">--</span> <span class="o">~</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">+++</span>
+    <span class="n">fct4</span>                                                         <span class="o">--</span>  <span class="mi">1</span>  <span class="mi">1</span> <span class="o">--</span> <span class="mf">0.00001</span> <span class="mf">0.81307</span> <span class="o">--</span> <span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="n">fct4</span> <span class="p">(</span><span class="n">fct4</span><span class="p">)</span>
+        <span class="n">fct2</span>                                                     <span class="o">--</span>  <span class="mi">1</span>  <span class="mi">1</span> <span class="o">--</span> <span class="mf">0.00001</span> <span class="mf">0.11089</span> <span class="o">--</span> <span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="n">fct2</span> <span class="p">(</span><span class="n">fct2</span><span class="p">)</span>
+            <span class="n">fct1</span>                                                 <span class="o">--</span>  <span class="mi">2</span>  <span class="mi">2</span> <span class="o">--</span> <span class="mf">0.00001</span> <span class="mf">0.11089</span> <span class="o">--</span> <span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="n">fct1</span> <span class="p">(</span><span class="n">fct1</span><span class="p">)</span> <span class="o">+++</span>
+        <span class="n">fct3</span>                                                     <span class="o">--</span>  <span class="mi">1</span>  <span class="mi">1</span> <span class="o">--</span> <span class="mf">0.00003</span> <span class="mf">0.70216</span> <span class="o">--</span> <span class="p">:</span><span class="mi">20</span><span class="p">:</span><span class="n">fct3</span> <span class="p">(</span><span class="n">fct3</span><span class="p">)</span>
+            <span class="n">fct0</span>                                                 <span class="o">--</span>  <span class="mi">1</span>  <span class="mi">1</span> <span class="o">--</span> <span class="mf">0.00001</span> <span class="mf">0.20089</span> <span class="o">--</span> <span class="p">:</span><span class="mi">7</span><span class="p">:</span><span class="n">fct0</span> <span class="p">(</span><span class="n">fct0</span><span class="p">)</span>
+                <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span>                     <span class="o">--</span>  <span class="mi">1</span>  <span class="mi">1</span> <span class="o">--</span> <span class="mf">0.20087</span> <span class="mf">0.20087</span> <span class="o">--</span> <span class="o">~</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">+++</span>
+            <span class="n">fct1</span>                                                 <span class="o">--</span>  <span class="mi">1</span>  <span class="mi">1</span> <span class="o">--</span> <span class="mf">0.00002</span> <span class="mf">0.50125</span> <span class="o">--</span> <span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="n">fct1</span> <span class="p">(</span><span class="n">fct1</span><span class="p">)</span> <span class="o">+++</span>
+    <span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span>                                 <span class="o">--</span>  <span class="mi">4</span>  <span class="mi">4</span> <span class="o">--</span> <span class="mf">0.81297</span> <span class="mf">0.81297</span> <span class="o">--</span> <span class="o">~</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="n">method</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="tests.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">tests</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">API</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">monitoring</a><ul>
+<li><a class="reference internal" href="#measuring-computing-time">Measuring Computing Time</a><ul>
+<li><a class="reference internal" href="#measure-time">measure_time</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.benchmark.measure_time"><code class="docutils literal notranslate"><span class="pre">measure_time()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#monitoring-memory">Monitoring Memory</a><ul>
+<li><a class="reference internal" href="#start-spying-on">start_spying_on</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.start_spying_on"><code class="docutils literal notranslate"><span class="pre">start_spying_on()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memoryspy">MemorySpy</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy"><code class="docutils literal notranslate"><span class="pre">MemorySpy</span></code></a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy.start"><code class="docutils literal notranslate"><span class="pre">MemorySpy.start()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.MemorySpy.stop"><code class="docutils literal notranslate"><span class="pre">MemorySpy.stop()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#monitor">Monitor</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.memory_peak.Monitor"><code class="docutils literal notranslate"><span class="pre">Monitor</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profiling">Profiling</a><ul>
+<li><a class="reference internal" href="#profilenode">ProfileNode</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode"><code class="docutils literal notranslate"><span class="pre">ProfileNode</span></code></a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.add_called_by"><code class="docutils literal notranslate"><span class="pre">ProfileNode.add_called_by()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.add_calls_to"><code class="docutils literal notranslate"><span class="pre">ProfileNode.add_calls_to()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.as_dict"><code class="docutils literal notranslate"><span class="pre">ProfileNode.as_dict()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.filter_node_"><code class="docutils literal notranslate"><span class="pre">ProfileNode.filter_node_()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.get_root"><code class="docutils literal notranslate"><span class="pre">ProfileNode.get_root()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.key"><code class="docutils literal notranslate"><span class="pre">ProfileNode.key</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.to_json"><code class="docutils literal notranslate"><span class="pre">ProfileNode.to_json()</span></code></a></li>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.ProfileNode.to_text"><code class="docutils literal notranslate"><span class="pre">ProfileNode.to_text()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profile">profile</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.profile"><code class="docutils literal notranslate"><span class="pre">profile()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#profile2graph">profile2graph</a><ul>
+<li><a class="reference internal" href="#onnxrt_backend_dev.monitoring.profiling.profile2graph"><code class="docutils literal notranslate"><span class="pre">profile2graph()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=a1637f0b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    </body>
+</html>
