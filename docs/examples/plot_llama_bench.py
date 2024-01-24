@@ -43,7 +43,7 @@ else:
 
 
 try:
-    data = run_benchmark(script_name, configs, verbose=1)
+    data = run_benchmark(script_name, configs, verbose=1, stop_if_exception=False)
     data_collected = True
 except BenchmarkError as e:
     print(e)
