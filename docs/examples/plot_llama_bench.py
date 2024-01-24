@@ -18,23 +18,27 @@ machine = {} if unit_test_going() else get_machine()
 
 if machine.get("capability", (0, 0)) >= (7, 0):
     configs = []
-    for backend, device, num_hidden_layers in itertools.product(
-        ["inductor", "ort"],
+    for backend, device, num_hidden_layers, mixed in itertools.product(
+        ["eager", "inductor", "ort"],
         ["cpu", "cuda"] if torch.cuda.is_available() else ["cpu"],
         [1, 2],
+        [0, 1],
     ):
+        if mixed == 1 and device == "cpu":
+            continue
         configs.append(
             dict(
                 backend=backend,
                 device=device,
                 num_hidden_layers=num_hidden_layers,
                 repeat=repeat,
+                mixed=mixed,
             )
         )
 else:
     configs = [
-        dict(backend="ort", device="cpu", num_hidden_layers=1, repeat=repeat),
-        dict(backend="ort", device="cpu", num_hidden_layers=2, repeat=repeat),
+        dict(backend="ort", device="cpu", num_hidden_layers=1, repeat=repeat, mixed=0),
+        dict(backend="ort", device="cpu", num_hidden_layers=2, repeat=repeat, mixed=0),
     ]
 
 
@@ -56,9 +60,10 @@ if data_collected:
 ################################
 # More simple
 
+columns = ["backend", "num_hidden_layers", "mixed", "time", "device", "warmup_time"]
 if data_collected:
     try:
-        dfs = df[["backend", "num_hidden_layers", "time", "device", "warmup_time"]]
+        dfs = df[columns]
     except KeyError as e:
         raise RuntimeError(f"Missing columns in {df.columns}\n{df.head().T}") from e
     print(dfs)
@@ -67,21 +72,31 @@ if data_collected:
 # Plot.
 
 if data_collected:
-    fig, ax = plt.subplots(2, 2, figsize=(10, 6))
+    fig, ax = plt.subplots(2, 3, figsize=(10, 9))
 
-    piv = dfs[dfs.device == "cpu"].pivot(
+    # warmup time
+
+    piv = dfs[(dfs.device == "cpu") & (dfs.mixed == 0)].pivot(
         index="num_hidden_layers", columns="backend", values="warmup_time"
     )
     if len(piv) > 0:
         piv.plot(title="llama with dort on cpu\nwarmup time", ax=ax[0, 0])
 
-    piv = dfs[dfs.device == "cuda"].pivot(
+    piv = dfs[(dfs.device == "cuda") & (dfs.mixed == 0)].pivot(
         index="num_hidden_layers", columns="backend", values="warmup_time"
     )
     if len(piv) > 0:
         piv.plot(title="llama with dort on cuda\nwarmup time", ax=ax[0, 1])
 
-    piv = dfs[dfs.device == "cpu"].pivot(
+    piv = dfs[(dfs.device == "cuda") & (dfs.mixed == 0)].pivot(
+        index="num_hidden_layers", columns="backend", values="warmup_time"
+    )
+    if len(piv) > 0:
+        piv.plot(title="llama with dort on cuda (mixed)\nwarmup time", ax=ax[0, 2])
+
+    # time
+
+    piv = dfs[(dfs.device == "cpu") & (dfs.mixed == 0)].pivot(
         index="num_hidden_layers", columns="backend", values="time"
     )
     if len(piv) > 0:
@@ -90,13 +105,22 @@ if data_collected:
             ax=ax[1, 0],
         )
 
-    piv = dfs[dfs.device == "cuda"].pivot(
+    piv = dfs[(dfs.device == "cuda") & (dfs.mixed == 0)].pivot(
         index="num_hidden_layers", columns="backend", values="time"
     )
     if len(piv) > 0:
         piv.plot(
             title=f"llama with dort on cuda\ntraining time for {repeat} iterations",
             ax=ax[1, 1],
+        )
+
+    piv = dfs[(dfs.device == "cuda") & (dfs.mixed == 1)].pivot(
+        index="num_hidden_layers", columns="backend", values="time"
+    )
+    if len(piv) > 0:
+        piv.plot(
+            title=f"llama with dort on cuda (mixed)\ntraining time for {repeat} iterations",
+            ax=ax[1, 2],
         )
 
     fig.tight_layout()

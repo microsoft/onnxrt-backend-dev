@@ -19,12 +19,13 @@ from onnxrt_backend_dev.args import get_parsed_args
 args = get_parsed_args(
     "dort_bench",
     description=__doc__,
-    backend=("ort", "'ort' or 'inductor'"),
+    backend=("ort", "'ort' or 'inductor' or 'eager'"),
     device=("cpu", "'cpu' or 'cuda'"),
     num_hidden_layers=(1, "number of hidden layers"),
     warmup=5,
     repeat=5,
-    expose="backend,repeat,warmup,device,num_hidden_layers",
+    mixed=(0, "mixed precision (based on autocast)"),
+    expose="backend,repeat,warmup,device,num_hidden_layers,mixed",
 )
 
 device = "cuda"
@@ -60,48 +61,55 @@ if args.backend == "ort":
     compiled_model = torch.compile(model, backend=local_ort)
 elif args.backend == "inductor":
     compiled_model = torch.compile(model, backend="inductor")
+elif args.backend == "eager":
+    compiled_model = model
 else:
     raise ValueError(f"Unexpected backend={args.backend!r}.")
 
 
-print("warmup")
-start_time = time.perf_counter()
-is_cuda = args.device == "cuda"
-for i in range(args.warmup):
-    if is_cuda:
-        inputs = [t.to("cuda") for t in example_args_collection[i]]
+def loop_iteration(is_cuda, inputs, compiled_model):
+    if args.mixed and is_cuda:
+        with torch.autocast(device="cuda", dtype=torch.float16):
+            result = compiled_model(*inputs)
     else:
-        inputs = example_args_collection[i]
-    result = compiled_model(*inputs)
+        result = compiled_model(*inputs)
+
     dummy_loss = torch.ones_like(result[0], memory_format=torch.contiguous_format)
     result[0].backward(dummy_loss)
     if is_cuda:
         torch.cuda.synchronize()
+
+
+print("warmup")
+warmup_times = []
+is_cuda = args.device == "cuda"
+for i in range(args.warmup):
+    example_inputs = example_args_collection[i]
+    inputs = [t.to("cuda") for t in example_inputs] if is_cuda else example_inputs
+    start_time = time.perf_counter()
+    loop_iteration(is_cuda, inputs, compiled_model)
+    warmup_times.append(time.perf_counter() - start_time)
+
 warmup_time = time.perf_counter() - start_time
 print(f"warmup done in {warmup_time}s.")
 
 print("measures")
 times = []
 for example_inputs in example_args_collection[args.warmup :]:
-    if is_cuda:
-        inputs = [t.to("cuda") for t in example_inputs]
-    else:
-        inputs = example_inputs
+    inputs = [t.to("cuda") for t in example_inputs] if is_cuda else example_inputs
     start_time = time.perf_counter()
-    result = compiled_model(*inputs)
-    dummy_loss = torch.ones_like(result[0], memory_format=torch.contiguous_format)
-    result[0].backward(dummy_loss)
-    if is_cuda:
-        torch.cuda.synchronize()
+    loop_iteration(is_cuda, inputs, compiled_model)
     times.append(time.perf_counter() - start_time)
+
 print("measures done.")
 
 print(f"backend={args.backend}")
 print(f"num_hidden_layers={args.num_hidden_layers}")
+print(f"mixed={args.mixed}")
 print(f"repeat={args.repeat}")
-print(f"warmup={args.warmup}")
 print(f"device={args.device}")
 print(f"avg={np.mean(times)}")
 print(f"times={times}")
+print(f"warmup_times={warmup_times}")
 print(f":time,{np.mean(times)};")
-print(f":warmup_time,{warmup_time};")
+print(f":warmup_time,{sum(warmup_times)};")

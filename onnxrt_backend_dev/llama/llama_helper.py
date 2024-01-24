@@ -5,7 +5,7 @@ Code modified from different sources:
 * https://github.com/pytorch/pytorch/pull/117009
 """
 import random
-from typing import Sequence, Tuple
+from typing import Optional, Sequence, Tuple
 
 
 def get_llama_decoder(
@@ -141,6 +141,7 @@ def get_llama_model(
     hidden_dropout_prob=0.0,
     attention_dropout_prob=0.0,
     _attn_implementation=None,
+    device: Optional[str] = None,
 ):
     import torch
     from transformers import LlamaConfig
@@ -176,6 +177,13 @@ def get_llama_model(
 
     example_args_collection = []
     for b, s in input_dims:
-        example_args_collection.append(generate_example_inputs(b, s, vocab_size))
+        a, b = generate_example_inputs(b, s, vocab_size)
+        if device:
+            a = a.to(device)
+            b = b.to(device)
+        example_args_collection.append((a, b))
 
-    return LlamaModelWrapper(config), example_args_collection
+    model = LlamaModelWrapper(config)
+    if device:
+        model = model.to(device)
+    return model, example_args_collection

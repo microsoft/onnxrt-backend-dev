@@ -105,6 +105,7 @@ sphinx_gallery_conf = {
 }
 
 epkg_dictionary = {
+    "CatBoost": "https://catboost.ai/",
     "cProfile.Profile": "https://docs.python.org/3/library/profile.html#profile.Profile",
     "DOT": "https://graphviz.org/doc/info/lang.html",
     "JIT": "https://en.wikipedia.org/wiki/Just-in-time_compilation",
@@ -113,6 +114,7 @@ epkg_dictionary = {
     "onnx.helper": "https://onnx.ai/onnx/api/helper.html",
     "ONNX": "https://onnx.ai/",
     "ONNX Operators": "https://onnx.ai/onnx/operators/",
+    "ONNX Zoo": "https://github.com/onnx/models",
     "onnxruntime": "https://onnxruntime.ai/",
     "onnxruntime-training": "https://onnxruntime.ai/docs/get-started/training-on-device.html",
     "numpy": "https://numpy.org/",
