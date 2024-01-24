@@ -1,3 +1,4 @@
+import onnxruntime  # noqa: F401
 import copy
 import pprint
 import unittest
@@ -148,6 +149,9 @@ class TestLlamaMixed(ExtTestCase):
         expected_graph_break=0,
         assert_counting=True,
     ):
+        import torch
+
+        torch._dynamo.reset()
         local_aot_ort, local_ort = make_aot_ort(dynamic=dynamic)
 
         self._assert_model_numerically(

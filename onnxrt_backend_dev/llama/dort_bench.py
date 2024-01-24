@@ -69,7 +69,7 @@ else:
 
 def loop_iteration(is_cuda, inputs, compiled_model):
     if args.mixed and is_cuda:
-        with torch.autocast(device="cuda", dtype=torch.float16):
+        with torch.autocast(device_type="cuda", dtype=torch.float16):
             result = compiled_model(*inputs)
     else:
         result = compiled_model(*inputs)
