@@ -57,17 +57,25 @@ class TestLlamaMixed(ExtTestCase):
         self,
         model,
         dynamo_backend,
-        example_args_collection,
+        example_args_collection_cpu,
         fullgraph: bool = True,
         test_backward: bool = False,
         dynamic: bool = False,
         atol: float = 1e-4,
         rtol: float = 1e-4,
         onnx_export: Optional[str] = None,
+        device=None,
     ):
         import torch
 
         assert onnx_export, "No export name was given"
+        assert device, "No specified device"
+        model = model.to(device)
+        example_args_collection = [
+            tuple(t.to(device) for t in examples)
+            for examples in example_args_collection_cpu
+        ]
+
         compiled_model = torch.compile(
             copy.deepcopy(model),
             backend=dynamo_backend,
@@ -148,6 +156,7 @@ class TestLlamaMixed(ExtTestCase):
         onnx_export=None,
         expected_graph_break=0,
         assert_counting=True,
+        device=None,
     ):
         import torch
 
@@ -161,6 +170,7 @@ class TestLlamaMixed(ExtTestCase):
             test_backward=test_backward,
             fullgraph=fullgraph,
             onnx_export=onnx_export,
+            device=device,
         )
 
         number_of_captured_graphs = 2 if test_backward else 1
@@ -187,14 +197,14 @@ class TestLlamaMixed(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     @unittest.skipIf(not cuda_available(), reason="always works on cuda")
-    def test_ort_llama_mixed(self):
+    def test_ort_llama_mixed_cuda(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_model(
-            input_dims=input_dims, device="cpu"
+            input_dims=input_dims, device="cuda"
         )
         self.common_test_model(
             model,
@@ -205,6 +215,7 @@ class TestLlamaMixed(ExtTestCase):
             onnx_export="test_ort_llama_mixed",
             expected_graph_break=7,
             assert_counting=False,
+            device="cuda"
         )
 
 

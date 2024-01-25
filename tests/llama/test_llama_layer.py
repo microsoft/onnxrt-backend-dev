@@ -59,18 +59,18 @@ class TestLlama(ExtTestCase):
         assert onnx_export, "No export name was given"
         assert device, "No specified device"
         model = model.to(device)
+        example_args_collection = [
+            tuple(t.to(device) for t in examples)
+            for examples in example_args_collection_cpu
+        ]
+
         compiled_model = torch.compile(
-            copy.deepcopy(model).to(device),
+            copy.deepcopy(model),
             backend=dynamo_backend,
             dynamic=dynamic,
             fullgraph=fullgraph,
         )
         tested = False
-
-        example_args_collection = [
-            tuple(t.to(device) for t in examples)
-            for examples in example_args_collection_cpu
-        ]
 
         one_example = None
         for example_args in example_args_collection:

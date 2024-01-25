@@ -5,6 +5,7 @@ Measure LLAMA speed
 ===================
 """
 
+import numpy as np
 import pandas
 import matplotlib.pyplot as plt
 import itertools
@@ -60,6 +61,9 @@ if data_collected:
 ################################
 # More simple
 
+for c in ["time", "warmup"]:
+    if c not in df.columns:
+        df[c] = np.nan
 columns = ["backend", "num_hidden_layers", "mixed", "time", "device", "warmup_time"]
 if data_collected:
     try:
