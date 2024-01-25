@@ -61,7 +61,7 @@ if data_collected:
 ################################
 # More simple
 
-for c in ["time", "warmup"]:
+for c in ["time", "warmup_time"]:
     if c not in df.columns:
         df[c] = np.nan
 columns = ["backend", "num_hidden_layers", "mixed", "time", "device", "warmup_time"]
