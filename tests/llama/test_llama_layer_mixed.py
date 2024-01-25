@@ -215,7 +215,7 @@ class TestLlamaMixed(ExtTestCase):
             onnx_export="test_ort_llama_mixed",
             expected_graph_break=7,
             assert_counting=False,
-            device="cuda"
+            device="cuda",
         )
 
 
