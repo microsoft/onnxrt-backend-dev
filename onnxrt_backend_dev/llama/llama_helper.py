@@ -117,7 +117,7 @@ def ids_tensor(shape, vocab_size, rng=None, name=None):
     import torch
 
     if rng is None:
-        rng = random.Random()
+        rng = random.Random(0)
 
     total_dims = 1
     for dim in shape:
