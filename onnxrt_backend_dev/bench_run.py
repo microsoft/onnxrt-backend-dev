@@ -1,4 +1,5 @@
 import multiprocessing
+import os
 import platform
 import re
 import subprocess
@@ -51,11 +52,17 @@ def _extract_metrics(text: str) -> Dict[str, str]:
     return dict(res)
 
 
+def _make_prefix(script_name: str, index: int) -> str:
+    name = os.path.splitext(script_name)[0]
+    return f"{name}_dort_c{index}_"
+
+
 def run_benchmark(
     script_name: str,
     configs: List[Dict[str, Union[str, int, float]]],
     verbose: int = 0,
     stop_if_exception: bool = True,
+    dump: bool = False,
 ) -> List[Dict[str, Union[str, int, float, Tuple[int, int]]]]:
     """
     Runs a script multiple times and extract information from the output
@@ -65,6 +72,7 @@ def run_benchmark(
     :param configs: list of execution to do
     :param stop_if_exception: stop if one experiment failed, otherwise continue
     :param verbose: use tqdm to follow the progress
+    :param dump: dump onnx file
     :return: values
     """
     if verbose:
@@ -74,11 +82,14 @@ def run_benchmark(
     else:
         loop = configs
 
-    machine = get_machine()
     data: List[Dict[str, Union[str, int, float, Tuple[int, int]]]] = []
-    for config in loop:
+    for i, config in enumerate(loop):
         cmd = _cmd_line(script_name, **config)
 
+        if dump:
+            os.environ["ONNXRT_DUMP_PATH"] = _make_prefix(script_name, i)
+        else:
+            os.environ["ONNXRT_DUMP_PATH"] = ""
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = p.communicate()
         out, err = res
@@ -105,7 +116,6 @@ def run_benchmark(
         metrics.update(config)
         metrics["ERROR"] = serr
         metrics["OUTPUT"] = sout
-        metrics.update(machine)
         metrics["CMD"] = f"[{' '.join(cmd)}]"
         data.append(metrics)
     return data
