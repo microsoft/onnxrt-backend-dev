@@ -4,15 +4,25 @@
 Measure LLAMA speed
 ===================
 
+The script is calling many times the script ``onnxrt_backend_dev.llama.dort_bench.py``.
+
 ::
 
     python docs/examples/plot_llama_bench.py --help
     
-To check mixed precision on multiple backend:
+For exemple, to check mixed precision on multiple backend:
 
 ::
 
     python docs/examples/plot_llama_bench.py --device=cuda --num_hidden_layers=1 --mixed=1
+
+
+Run the following command to run one experiment and get the available options:
+
+::
+
+    python -m onnxrt_backend_dev.llama.dort_bench --help
+
 """
 import onnxruntime
 import sys
