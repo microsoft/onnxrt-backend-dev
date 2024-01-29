@@ -58,6 +58,10 @@ disable_error_code = ["assignment", "attr-defined", "list-item", "var-annotated"
 module = ["onnxrt_backend_dev.plotting.memory"]
 disable_error_code = ["name-defined"]
 
+[[tool.mypy.overrides]]
+module = ["onnxrt_backend_dev.llama.llama_helper"]
+disable_error_code = ["attr-defined"]
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [

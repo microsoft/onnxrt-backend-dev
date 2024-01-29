@@ -52,7 +52,10 @@ def _extract_metrics(text: str) -> Dict[str, str]:
 
 
 def run_benchmark(
-    script_name: str, configs: List[Dict[str, Union[str, int, float]]], verbose: int = 0
+    script_name: str,
+    configs: List[Dict[str, Union[str, int, float]]],
+    verbose: int = 0,
+    stop_if_exception: bool = True,
 ) -> List[Dict[str, Union[str, int, float, Tuple[int, int]]]]:
     """
     Runs a script multiple times and extract information from the output
@@ -60,6 +63,7 @@ def run_benchmark(
 
     :param script_name: python script to run
     :param configs: list of execution to do
+    :param stop_if_exception: stop if one experiment failed, otherwise continue
     :param verbose: use tqdm to follow the progress
     :return: values
     """
@@ -82,18 +86,22 @@ def run_benchmark(
         serr = err.decode("utf-8", errors="ignore")
 
         if "ONNXRuntimeError" in serr or "ONNXRuntimeError" in sout:
-            raise RuntimeError(
-                f"Unable to continue with config {config} due to the "
-                f"following error\n{serr}"
-                f"\n----OUTPUT--\n{sout}"
-            )
+            if stop_if_exception:
+                raise RuntimeError(
+                    f"Unable to continue with config {config} due to the "
+                    f"following error\n{serr}"
+                    f"\n----OUTPUT--\n{sout}"
+                )
 
         metrics = _extract_metrics(sout)
         if len(metrics) == 0:
-            raise BenchmarkError(
-                f"Unable (2) to continue with config {config}, no metric was "
-                f"collected.\n--ERROR--\n{serr}\n--OUTPUT--\n{sout}"
-            )
+            if stop_if_exception:
+                raise BenchmarkError(
+                    f"Unable (2) to continue with config {config}, no metric was "
+                    f"collected.\n--ERROR--\n{serr}\n--OUTPUT--\n{sout}"
+                )
+            else:
+                metrics = {}
         metrics.update(config)
         metrics["ERROR"] = serr
         metrics["OUTPUT"] = sout
