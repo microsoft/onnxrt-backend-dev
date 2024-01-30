@@ -3,8 +3,30 @@
 
 Measure LLAMA speed
 ===================
+
+The script is calling many times the script ``onnxrt_backend_dev.llama.dort_bench.py``.
+
+::
+
+    python docs/examples/plot_llama_bench.py --help
+    
+For exemple, to check mixed precision on multiple backend:
+
+::
+
+    python docs/examples/plot_llama_bench.py --device=cuda --num_hidden_layers=1 --mixed=1
+
+
+Run the following command to run one experiment and get the available options:
+
+::
+
+    python -m onnxrt_backend_dev.llama.dort_bench --help
+
 """
 
+import onnxruntime  # noqa: F401
+import sys
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
@@ -12,18 +34,35 @@ import itertools
 import torch
 from onnxrt_backend_dev.ext_test_case import unit_test_going
 from onnxrt_backend_dev.bench_run import run_benchmark, get_machine, BenchmarkError
+from onnxrt_backend_dev.args import get_parsed_args
 
-repeat = 5
 script_name = "onnxrt_backend_dev.llama.dort_bench"
 machine = {} if unit_test_going() else get_machine()
 
-if machine.get("capability", (0, 0)) >= (7, 0):
+
+parsed_args = get_parsed_args(
+    "plot_llama_bench",
+    description=__doc__,
+    warmup=5,
+    repeat=5,
+    backend=("eager,inductor,ort", "backend to test"),
+    device=("cpu,cuda" if torch.cuda.is_available() else "cpu", "device to test"),
+    num_hidden_layers=("1,2", "hidden layers to test"),
+    mixed=("0,1", "boolean value to test (mixed precision or not)"),
+    script_name=("onnxrt_backend_dev.llama.dort_bench", "script to run"),
+    dump=(0, "dump the models with env ONNXRT_DUMP_PATH"),
+    expose="backend,device,num_hidden_layers,mixed,scipt_name,repeat,warmup,dump",
+)
+repeat = parsed_args.repeat
+warmup = parsed_args.warmup
+
+if machine.get("capability", (0, 0)) >= (7, 0) and "--short" not in sys.argv:
     configs = []
     for backend, device, num_hidden_layers, mixed in itertools.product(
-        ["eager", "inductor", "ort"],
-        ["cpu", "cuda"] if torch.cuda.is_available() else ["cpu"],
-        [1, 2],
-        [0, 1],
+        parsed_args.backend.split(","),
+        parsed_args.device.split(","),
+        list(map(int, parsed_args.num_hidden_layers.split(","))),
+        list(map(int, parsed_args.mixed.split(","))),
     ):
         if mixed == 1 and device == "cpu":
             continue
@@ -34,17 +73,39 @@ if machine.get("capability", (0, 0)) >= (7, 0):
                 num_hidden_layers=num_hidden_layers,
                 repeat=repeat,
                 mixed=mixed,
+                warmup=warmup,
             )
         )
 else:
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     configs = [
-        dict(backend="ort", device="cpu", num_hidden_layers=1, repeat=repeat, mixed=0),
-        dict(backend="ort", device="cpu", num_hidden_layers=2, repeat=repeat, mixed=0),
+        dict(
+            backend="ort",
+            device=device,
+            num_hidden_layers=1,
+            repeat=repeat,
+            mixed=0,
+            warmup=warmup,
+        ),
+        dict(
+            backend="ort",
+            device=device,
+            num_hidden_layers=2,
+            repeat=repeat,
+            mixed=0,
+            warmup=warmup,
+        ),
     ]
 
 
 try:
-    data = run_benchmark(script_name, configs, verbose=1, stop_if_exception=False)
+    data = run_benchmark(
+        parsed_args.script_name,
+        configs,
+        verbose=1,
+        stop_if_exception=False,
+        dump=parsed_args.dump in ("1", 1),
+    )
     data_collected = True
 except BenchmarkError as e:
     print(e)

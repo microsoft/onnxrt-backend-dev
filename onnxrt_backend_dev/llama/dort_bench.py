@@ -4,6 +4,7 @@ Run llama model with DORT
 
 The script runs a few iterations of a dummy llama model.
 """
+
 import time
 import onnxruntime
 import numpy as np
@@ -113,3 +114,4 @@ print(f"times={times}")
 print(f"warmup_times={warmup_times}")
 print(f":time,{np.mean(times)};")
 print(f":warmup_time,{sum(warmup_times)};")
+print(f":torch,{torch.__file__};")
