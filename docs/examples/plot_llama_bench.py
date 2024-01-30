@@ -24,7 +24,8 @@ Run the following command to run one experiment and get the available options:
     python -m onnxrt_backend_dev.llama.dort_bench --help
 
 """
-import onnxruntime
+
+import onnxruntime  # noqa: F401
 import sys
 import numpy as np
 import pandas
@@ -42,6 +43,7 @@ machine = {} if unit_test_going() else get_machine()
 parsed_args = get_parsed_args(
     "plot_llama_bench",
     description=__doc__,
+    warmup=5,
     repeat=5,
     backend=("eager,inductor,ort", "backend to test"),
     device=("cpu,cuda" if torch.cuda.is_available() else "cpu", "device to test"),
@@ -49,9 +51,10 @@ parsed_args = get_parsed_args(
     mixed=("0,1", "boolean value to test (mixed precision or not)"),
     script_name=("onnxrt_backend_dev.llama.dort_bench", "script to run"),
     dump=(0, "dump the models with env ONNXRT_DUMP_PATH"),
-    expose="backend,device,num_hidden_layers,mixed,scipt_name,repeat,dump",
+    expose="backend,device,num_hidden_layers,mixed,scipt_name,repeat,warmup,dump",
 )
 repeat = parsed_args.repeat
+warmup = parsed_args.warmup
 
 if machine.get("capability", (0, 0)) >= (7, 0) and "--short" not in sys.argv:
     configs = []
@@ -70,13 +73,28 @@ if machine.get("capability", (0, 0)) >= (7, 0) and "--short" not in sys.argv:
                 num_hidden_layers=num_hidden_layers,
                 repeat=repeat,
                 mixed=mixed,
+                warmup=warmup,
             )
         )
 else:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     configs = [
-        dict(backend="ort", device=device, num_hidden_layers=1, repeat=repeat, mixed=0),
-        dict(backend="ort", device=device, num_hidden_layers=2, repeat=repeat, mixed=0),
+        dict(
+            backend="ort",
+            device=device,
+            num_hidden_layers=1,
+            repeat=repeat,
+            mixed=0,
+            warmup=warmup,
+        ),
+        dict(
+            backend="ort",
+            device=device,
+            num_hidden_layers=2,
+            repeat=repeat,
+            mixed=0,
+            warmup=warmup,
+        ),
     ]
 
 

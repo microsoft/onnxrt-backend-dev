@@ -4,6 +4,7 @@ Run llama model with DORT
 
 The script runs a few iterations of a dummy llama model.
 """
+
 import time
 import onnxruntime
 import numpy as np
