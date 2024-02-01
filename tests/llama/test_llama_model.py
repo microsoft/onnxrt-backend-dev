@@ -23,6 +23,7 @@ def torch_min(v: str) -> bool:
 
 class TestLlamaModel(ExtTestCase):
     @skipif_ci_windows("dynamo compiler is not available on Windows")
+    @unittest.skipIf(not has_cuda(), reason="only works on cuda")
     @dump_dort_onnx
     def test_llama_model(self, backend="ort", verbose=__name__ == "__main__"):
         import time
