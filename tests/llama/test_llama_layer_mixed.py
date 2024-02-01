@@ -8,6 +8,7 @@ from onnxrt_backend_dev.ext_test_case import (
     ExtTestCase,
     ignore_warnings,
     skipif_ci_windows,
+    dump_dort_onnx,
 )
 
 
@@ -197,6 +198,7 @@ class TestLlamaMixed(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     @unittest.skipIf(not cuda_available(), reason="always works on cuda")
+    @dump_dort_onnx
     def test_ort_llama_mixed_cuda(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
@@ -204,7 +206,9 @@ class TestLlamaMixed(ExtTestCase):
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_model(
-            input_dims=input_dims, device="cuda"
+            input_dims=input_dims,
+            device="cuda",
+            _attn_implementation="eager",
         )
         self.common_test_model(
             model,

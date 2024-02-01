@@ -13,6 +13,7 @@ dist/*
 build/*
 .eggs/*
 *egg-info/*
+dump_dort/*
 onnxruntime_profile*
 plot_*.txt
 docs/auto_examples/*
