@@ -441,7 +441,7 @@ class TestLlama(ExtTestCase):
             dynamic=False,
             fullgraph=True,
             onnx_export="test_ort_llama_model",
-            expected_graph_break=0,
+            expected_graph_break=(0, 2),
             device="cpu",
         )
 

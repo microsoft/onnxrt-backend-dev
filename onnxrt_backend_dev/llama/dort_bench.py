@@ -3,6 +3,10 @@ Run llama model with DORT
 =========================
 
 The script runs a few iterations of a dummy llama model.
+
+::
+
+    python -m onnxrt_backend_dev.llama.dort_bench --help
 """
 
 import time
@@ -26,7 +30,11 @@ args = get_parsed_args(
     warmup=5,
     repeat=5,
     mixed=(0, "mixed precision (based on autocast)"),
-    expose="backend,repeat,warmup,device,num_hidden_layers,mixed",
+    export=(
+        "",
+        "export the model with dynamo and torch.script, " "use this as a prefix",
+    ),
+    expose="backend,repeat,warmup,device,num_hidden_layers,mixed,export",
 )
 
 device = "cuda"
@@ -80,6 +88,39 @@ def loop_iteration(is_cuda, inputs, compiled_model):
     if is_cuda:
         torch.cuda.synchronize()
 
+
+if args.export:
+    from onnxrewriter.optimizer import optimize
+
+    providers = (
+        ["CPUExecutionProvider"]
+        if device == "cpu"
+        else ["CUDAExecutionProvider", "CPUExecutionProvider"]
+    )
+
+    filename = f"{args.export}.script.onnx"
+    print("export with torch.onnx.export to {filename!r}")
+    input_names = ["input{i}" for i in len(example_args_collection[0])]
+    torch.onnx.export(model, *example_args_collection[0], filename, input_names)
+
+    ofilename = f"{args.export}.script.opt.onnx"
+    print("onnxruntime optimization to {ofilename!r}")
+    opts = onnxruntime.SessionOptions()
+    opts.optimized_model_filepath = ofilename
+    sess = onnxruntime.InferenceSession(filename, opts, providers=providers)
+
+    filename = f"{args.export}.dynamo.onnx"
+    print("export with torch.onnx.dynamo_export to {filename!r}")
+    export_output = torch.onnx.dynamo_export(model, *args)
+    optimized_model = optimize(export_output.model_proto)
+    with open(filename, "wb") as f:
+        f.write(optimized_model.SerializeToString())
+
+    ofilename = f"{args.export}.dynamo.opt.onnx"
+    print("onnxruntime optimization to {ofilename!r}")
+    opts = onnxruntime.SessionOptions()
+    opts.optimized_model_filepath = ofilename
+    sess = onnxruntime.InferenceSession(filename, opts, providers=providers)
 
 print("warmup")
 warmup_times = []
