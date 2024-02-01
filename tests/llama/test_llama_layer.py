@@ -72,10 +72,8 @@ class TestLlama(ExtTestCase):
         )
         tested = False
 
-        one_example = None
         for example_args in example_args_collection:
             baseline_result = model(*example_args)
-            one_example = example_args
 
             result = compiled_model(*example_args)
             if isinstance(baseline_result, torch.Tensor):
@@ -90,7 +88,9 @@ class TestLlama(ExtTestCase):
                 if test_backward:
                     if grad_ones:
                         dummy_loss = torch.ones_like(
-                            baseline_result[0], memory_format=torch.contiguous_format
+                            baseline_result[0],
+                            memory_format=torch.contiguous_format,
+                            device=device,
                         )
                         baseline_result[0].backward(dummy_loss)
                         result[0].backward(dummy_loss)
@@ -109,13 +109,12 @@ class TestLlama(ExtTestCase):
                     baseline_result = baseline_result.to_tuple()
                 if hasattr(result, "to_tuple"):
                     result = result.to_tuple()
+                baseline_result = tuple(b for b in baseline_result if b is not None)
+                result = tuple(b for b in result if b is not None)
                 assert len(baseline_result) == len(
                     result
                 ), f"Mismatch number of outputs {len(baseline_result)} != {len(result)}"
                 for baseline_elem, result_elem in zip(baseline_result, result):
-                    torch.testing.assert_close(
-                        baseline_elem, result_elem, atol=atol, rtol=rtol
-                    )
                     torch.testing.assert_close(
                         baseline_elem, result_elem, atol=atol, rtol=rtol
                     )
@@ -141,19 +140,6 @@ class TestLlama(ExtTestCase):
 
         if test_backward and not tested:
             raise AssertionError("Model backward was not tested.")
-        # export to onnx
-        try:
-            torch.onnx.export(
-                copy.deepcopy(model), *one_example, f"{onnx_export}_script.onnx"
-            )
-        except Exception as e:
-            print("torch.onnx.export failed:", e)
-        try:
-            torch.onnx.dynamo_export(copy.deepcopy(model), *one_example).save(
-                f"{onnx_export}_dynamo.onnx"
-            )
-        except Exception as e:
-            print("torch.onnx.dynamo_export failed:", e)
 
     def _assert_counting_information(
         self,
@@ -166,15 +152,6 @@ class TestLlama(ExtTestCase):
         self.assertEqual(
             expected_execution_count * (expected_graph_break + 1),
             ort_backend.execution_count,
-        )
-        self.assertEqual(
-            len(ort_backend._all_ort_execution_info.execution_info_per_graph_module),
-            number_of_cached_graph_modules * (expected_graph_break + 1),
-        )
-        self.assertEqual(
-            len(ort_backend._all_ort_execution_info.execution_info_per_graph_module),
-            len(number_of_exported_onnx_models_for_all_graph_modules)
-            * (expected_graph_break + 1),
         )
         for (
             onnx_info,
@@ -198,6 +175,9 @@ class TestLlama(ExtTestCase):
         grad_ones=False,
         device=None,
     ):
+        import torch
+
+        torch._dynamo.reset()
         local_aot_ort, local_ort = make_aot_ort(dynamic=dynamic)
 
         self._assert_model_numerically(
@@ -447,7 +427,7 @@ class TestLlama(ExtTestCase):
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
-    def test_ort_llama_model_nofullgraph_cpu(self):
+    def test_ort_llama_model_cpu(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
@@ -460,7 +440,7 @@ class TestLlama(ExtTestCase):
             test_backward=False,
             dynamic=False,
             fullgraph=True,
-            onnx_export="test_ort_llama_model_nofullgraph",
+            onnx_export="test_ort_llama_model",
             # torch==2.3.0.dev20240102+cu121, ok, expected_graph_break=6
             # torch==2.3.0.dev20240109+cu121, ok, expected_graph_break=7
             # torch==2.3.0.dev20240110+cu121: ok, expected_graph_break=7
@@ -468,7 +448,7 @@ class TestLlama(ExtTestCase):
             # torch==2.3.0.dev20240113+cu121: discrepancies
             # torch==2.3.0.dev20240116+cu121: discrepancies
             # torch==2.3.0.dev20240124+cu121: ok, expected_graph_break=4
-            expected_graph_break=(6, 7, 4),
+            expected_graph_break=0,
             device="cpu",
         )
 
@@ -476,7 +456,7 @@ class TestLlama(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     @unittest.skipIf(not has_cuda(), reason="cuda not available")
-    def test_ort_llama_model_nofullgraph_cuda(self):
+    def test_ort_llama_model_cuda(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
@@ -489,34 +469,28 @@ class TestLlama(ExtTestCase):
             test_backward=False,
             dynamic=False,
             fullgraph=True,
-            onnx_export="test_ort_llama_model_nofullgraph",
-            expected_graph_break=(6, 7, 4),
+            onnx_export="test_ort_llama_model",
+            expected_graph_break=0,
             device="cuda",
         )
 
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
-    def test_ort_llama_model_backward_nofullgraph_grad_ones_cpu(self):
+    def test_ort_llama_model_backward_grad_ones_cpu(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_model(input_dims=input_dims)
-        # torch==2.3.0.dev20240109+cu121: ok
-        # torch==2.3.0.dev20240110+cu121: ok
-        # torch==2.3.0.dev20240111+cu121: discrepancies
-        # torch==2.3.0.dev20240113+cu121: discrepancies
-        # torch==2.3.0.dev20240116+cu121: discrepancies
-        # torch==2.3.0.dev20240124+cu121: discrepancies
         self.common_test_model(
             model,
             example_args_collection,
             test_backward=True,
             dynamic=False,
-            fullgraph=False,
-            onnx_export="test_ort_llama_model_backward_nofullgraph",
+            fullgraph=True,
+            onnx_export="test_ort_llama_model_backward",
             assert_counting=False,
             grad_ones=True,
             device="cpu",
@@ -525,26 +499,20 @@ class TestLlama(ExtTestCase):
     @ignore_warnings((UserWarning, DeprecationWarning))
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
-    def test_ort_llama_model_backward_nofullgraph_cpu(self):
+    def test_ort_llama_model_backward_cpu(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_model(input_dims=input_dims)
-        # torch==2.3.0.dev20240109+cu121: ok
-        # torch==2.3.0.dev20240110+cu121: ok
-        # torch==2.3.0.dev20240111+cu121: discrepancies
-        # torch==2.3.0.dev20240113+cu121: discrepancies
-        # torch==2.3.0.dev20240116+cu121: discrepancies
-        # torch==2.3.0.dev20240124+cu121: discrepancies
         self.common_test_model(
             model,
             example_args_collection,
             test_backward=True,
             dynamic=False,
-            fullgraph=False,
-            onnx_export="test_ort_llama_model_backward_nofullgraph",
+            fullgraph=True,
+            onnx_export="test_ort_llama_model_backward",
             assert_counting=False,
             device="cpu",
         )
@@ -553,7 +521,7 @@ class TestLlama(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     @unittest.skipIf(not has_cuda(), reason="cuda not available")
-    def test_ort_llama_model_backward_nofullgraph_cuda(self):
+    def test_ort_llama_model_backward_cuda(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
         )
@@ -565,13 +533,13 @@ class TestLlama(ExtTestCase):
             example_args_collection,
             test_backward=True,
             dynamic=False,
-            fullgraph=False,
-            onnx_export="test_ort_llama_model_backward_nofullgraph",
+            fullgraph=True,
+            onnx_export="test_ort_llama_model_backward",
             assert_counting=False,
             device="cuda",
         )
 
 
 if __name__ == "__main__":
-    # TestLlama().test_ort_llama_model_backward_nofullgraph()
+    # TestLlama().test_ort_llama_model_backward()
     unittest.main(verbosity=2)

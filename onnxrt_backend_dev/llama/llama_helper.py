@@ -131,7 +131,7 @@ def get_llama_model(
     intermediate_size=16,
     max_position_embeddings=256,
     num_attention_heads=2,
-    _attn_implementation=None,
+    _attn_implementation="eager",
     device: Optional[str] = None,
 ):
     import torch
