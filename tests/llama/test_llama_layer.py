@@ -459,7 +459,7 @@ class TestLlama(ExtTestCase):
             example_args_collection,
             test_backward=False,
             dynamic=False,
-            fullgraph=False,
+            fullgraph=True,
             onnx_export="test_ort_llama_model_nofullgraph",
             # torch==2.3.0.dev20240102+cu121, ok, expected_graph_break=6
             # torch==2.3.0.dev20240109+cu121, ok, expected_graph_break=7
@@ -488,7 +488,7 @@ class TestLlama(ExtTestCase):
             example_args_collection,
             test_backward=False,
             dynamic=False,
-            fullgraph=False,
+            fullgraph=True,
             onnx_export="test_ort_llama_model_nofullgraph",
             expected_graph_break=(6, 7, 4),
             device="cuda",

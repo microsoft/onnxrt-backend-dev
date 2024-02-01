@@ -4,7 +4,6 @@ import unittest
 import packaging.version as pv
 from onnxrt_backend_dev.ext_test_case import (
     ExtTestCase,
-    ignore_warnings,
     skipif_ci_windows,
     dump_dort_onnx,
 )
@@ -23,11 +22,9 @@ def torch_min(v: str) -> bool:
 
 
 class TestLlamaModel(ExtTestCase):
-
     @skipif_ci_windows("dynamo compiler is not available on Windows")
     @dump_dort_onnx
     def test_llama_model(self, backend="ort", verbose=__name__ == "__main__"):
-
         import time
         import torch
         import torch._dynamo.backends.registry
@@ -43,8 +40,8 @@ class TestLlamaModel(ExtTestCase):
             vocab_size=1024,
             hidden_size=32,
             intermediate_size=16,
-            max_position_embeddings=256,
-            # num_attention_heads=2,
+            max_position_embeddings=1024,  # max_position_embeddings>=vocab_size256 --> introduces graph break
+            num_attention_heads=2,
         )
         config._attn_implementation = "eager"
         device = "cuda" if has_cuda() else "cpu"
@@ -138,7 +135,7 @@ class TestLlamaModel(ExtTestCase):
 
         if verbose:
             print("benchmark")
-            return
+        os.environ["ONNXRT_DUMP_PATH"] += "Z"
         start_time = time.time()
         for i, example_inputs in enumerate(example_args_collection):
             if verbose:

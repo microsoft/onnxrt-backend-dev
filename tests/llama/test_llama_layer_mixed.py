@@ -215,7 +215,7 @@ class TestLlamaMixed(ExtTestCase):
             example_args_collection,
             True,
             False,
-            fullgraph=False,
+            fullgraph=True,
             onnx_export="test_ort_llama_mixed",
             expected_graph_break=7,
             assert_counting=False,
