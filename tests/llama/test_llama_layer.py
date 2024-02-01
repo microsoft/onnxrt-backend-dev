@@ -441,13 +441,6 @@ class TestLlama(ExtTestCase):
             dynamic=False,
             fullgraph=True,
             onnx_export="test_ort_llama_model",
-            # torch==2.3.0.dev20240102+cu121, ok, expected_graph_break=6
-            # torch==2.3.0.dev20240109+cu121, ok, expected_graph_break=7
-            # torch==2.3.0.dev20240110+cu121: ok, expected_graph_break=7
-            # torch==2.3.0.dev20240111+cu121: discrepancies (extra_support_dict doesn't supports node.target: aten.to.dtype is the only one to show up)
-            # torch==2.3.0.dev20240113+cu121: discrepancies
-            # torch==2.3.0.dev20240116+cu121: discrepancies
-            # torch==2.3.0.dev20240124+cu121: ok, expected_graph_break=4
             expected_graph_break=0,
             device="cpu",
         )
