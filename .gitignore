@@ -9,6 +9,7 @@
 *.csv
 *.xlsx
 *.sarif
+llama_dort_*
 dist/*
 build/*
 .eggs/*

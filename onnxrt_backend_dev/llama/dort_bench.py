@@ -7,6 +7,18 @@ The script runs a few iterations of a dummy llama model.
 ::
 
     python -m onnxrt_backend_dev.llama.dort_bench --help
+
+Example, run llama model with onnxrt backend on cuda.
+
+::
+
+    python -m onnxrt_backend_dev.llama.dort_bench --backend ort --device cuda
+    
+Other example, same script but dumps the produces models.
+
+::
+
+    ONNXRT_DUMP_PATH="llama_dort_" python -m onnxrt_backend_dev.llama.dort_bench --backend ort --device cuda
 """
 
 import time
@@ -35,7 +47,8 @@ args = get_parsed_args(
         "",
         "export the model with dynamo and torch.script, " "use this as a prefix",
     ),
-    expose="backend,repeat,warmup,device,num_hidden_layers,mixed,export",
+    config=("default", "default or small to test"),
+    expose="backend,repeat,warmup,device,num_hidden_layers,mixed,export,config",
 )
 
 device = "cuda"
@@ -55,11 +68,28 @@ def make_aot_ort(dynamic: bool = False):
     return ort_backend, ort_backend
 
 
-model, example_args_collection = get_llama_model(
-    input_dims=[(2, 1024)] * (args.repeat + args.warmup),
-    _attn_implementation="eager",
-    num_hidden_layers=args.num_hidden_layers,
-)
+if args.config == "small":
+    model, example_args_collection = get_llama_model(
+        input_dims=[(2, 1024)] * (args.repeat + args.warmup),
+        _attn_implementation="eager",
+        num_hidden_layers=args.num_hidden_layers,
+        hidden_size=16,
+        vocab_size=1024,
+        intermediate_size=16,
+        max_position_embeddings=1024,
+        num_attention_heads=2,
+    )
+else:
+    model, example_args_collection = get_llama_model(
+        input_dims=[(2, 1024)] * (args.repeat + args.warmup),
+        _attn_implementation="eager",
+        num_hidden_layers=args.num_hidden_layers,
+        hidden_size=4096,
+        vocab_size=32000,
+        intermediate_size=11008,
+        max_position_embeddings=2048,
+        num_attention_heads=32,
+    )
 
 
 model = model.eval().to(args.device)
