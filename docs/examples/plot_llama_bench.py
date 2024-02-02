@@ -38,6 +38,7 @@ from onnxrt_backend_dev.args import get_parsed_args
 
 script_name = "onnxrt_backend_dev.llama.dort_bench"
 machine = {} if unit_test_going() else get_machine()
+assert unit_test_going()
 
 
 parsed_args = get_parsed_args(

@@ -19,6 +19,7 @@ from torch.onnx import _OrtBackend as OrtBackend
 from torch.onnx import _OrtBackendOptions as OrtBackendOptions
 from onnxrt_backend_dev.llama.llama_helper import get_llama_model
 from onnxrt_backend_dev.args import get_parsed_args
+from onnxrt_backend_dev.convert_helper import optimize_model_proto
 
 
 args = get_parsed_args(
@@ -90,8 +91,6 @@ def loop_iteration(is_cuda, inputs, compiled_model):
 
 
 if args.export:
-    from onnxrewriter.optimizer import optimize
-
     providers = (
         ["CPUExecutionProvider"]
         if device == "cpu"
@@ -100,7 +99,7 @@ if args.export:
 
     filename = f"{args.export}.script.onnx"
     print("export with torch.onnx.export to {filename!r}")
-    input_names = ["input{i}" for i in len(example_args_collection[0])]
+    input_names = ["input{i}" for i in range(len(example_args_collection[0]))]
     torch.onnx.export(model, *example_args_collection[0], filename, input_names)
 
     ofilename = f"{args.export}.script.opt.onnx"
@@ -112,7 +111,7 @@ if args.export:
     filename = f"{args.export}.dynamo.onnx"
     print("export with torch.onnx.dynamo_export to {filename!r}")
     export_output = torch.onnx.dynamo_export(model, *args)
-    optimized_model = optimize(export_output.model_proto)
+    optimized_model = optimize_model_proto(export_output.model_proto)
     with open(filename, "wb") as f:
         f.write(optimized_model.SerializeToString())
 

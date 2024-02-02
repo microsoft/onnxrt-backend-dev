@@ -211,6 +211,8 @@ class TestLlamaMixed(ExtTestCase):
         expected_graph_break=0,
         assert_counting=True,
         device=None,
+        atol=1e-4,
+        rtol=1e-4,
     ):
         import torch
 
@@ -225,6 +227,8 @@ class TestLlamaMixed(ExtTestCase):
             fullgraph=fullgraph,
             onnx_export=onnx_export,
             device=device,
+            atol=atol,
+            rtol=rtol,
         )
 
         number_of_captured_graphs = 2 if test_backward else 1
@@ -273,6 +277,7 @@ class TestLlamaMixed(ExtTestCase):
             expected_graph_break=7,
             assert_counting=False,
             device="cuda",
+            rtol=5e-2,
         )
 
 

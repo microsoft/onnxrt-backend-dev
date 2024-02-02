@@ -68,8 +68,8 @@ def unit_test_going():
     Enables a flag telling the script is running while testing it.
     Avoids unit tests to be very long if used.
     """
-    going = int(os.environ.get("UNITTEST_GOING", 0))
-    return going == 1
+    going = int(os.environ.get("UNITTEST_GOING", "0"))
+    return going in (1, "1")
 
 
 def ignore_warnings(warns: List[Warning]) -> Callable:
