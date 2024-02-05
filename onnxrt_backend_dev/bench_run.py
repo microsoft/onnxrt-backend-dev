@@ -90,6 +90,8 @@ def run_benchmark(
             os.environ["ONNXRT_DUMP_PATH"] = _make_prefix(script_name, i)
         else:
             os.environ["ONNXRT_DUMP_PATH"] = ""
+        if verbose > 3:
+            print(f"[run_benchmark] cmd={cmd}")
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         res = p.communicate()
         out, err = res

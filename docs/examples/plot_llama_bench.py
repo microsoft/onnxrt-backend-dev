@@ -26,7 +26,6 @@ Run the following command to run one experiment and get the available options:
 """
 
 import onnxruntime  # noqa: F401
-import sys
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
@@ -51,12 +50,14 @@ parsed_args = get_parsed_args(
     mixed=("0,1", "boolean value to test (mixed precision or not)"),
     script_name=("onnxrt_backend_dev.llama.dort_bench", "script to run"),
     dump=(0, "dump the models with env ONNXRT_DUMP_PATH"),
-    expose="backend,device,num_hidden_layers,mixed,scipt_name,repeat,warmup,dump",
+    check=(0, "just check the script is working, ignores all other parameters"),
+    expose="backend,device,num_hidden_layers,mixed,scipt_name,repeat,warmup,dump,check",
 )
 repeat = parsed_args.repeat
 warmup = parsed_args.warmup
 
-if machine.get("capability", (0, 0)) >= (7, 0) and "--short" not in sys.argv:
+if machine.get("capability", (0, 0)) >= (7, 0) and parsed_args.check not in (1, "1"):
+    verbose = 1
     configs = []
     for backend, device, num_hidden_layers, mixed in itertools.product(
         parsed_args.backend.split(","),
@@ -77,32 +78,24 @@ if machine.get("capability", (0, 0)) >= (7, 0) and "--short" not in sys.argv:
             )
         )
 else:
+    verbose = 5
     device = "cuda" if torch.cuda.is_available() else "cpu"
     configs = [
         dict(
             backend="ort",
             device=device,
             num_hidden_layers=1,
-            repeat=repeat,
+            repeat=1,
             mixed=0,
-            warmup=warmup,
-        ),
-        dict(
-            backend="ort",
-            device=device,
-            num_hidden_layers=2,
-            repeat=repeat,
-            mixed=0,
-            warmup=warmup,
+            warmup=1,
         ),
     ]
-
 
 try:
     data = run_benchmark(
         parsed_args.script_name,
         configs,
-        verbose=1,
+        verbose=verbose,
         stop_if_exception=False,
         dump=parsed_args.dump in ("1", 1),
     )
