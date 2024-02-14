@@ -3,6 +3,22 @@ Run llama model with DORT
 =========================
 
 The script runs a few iterations of a dummy llama model.
+
+::
+
+    python -m onnxrt_backend_dev.llama.dort_bench --help
+
+Example, run llama model with onnxrt backend on cuda.
+
+::
+
+    python -m onnxrt_backend_dev.llama.dort_bench --backend ort --device cuda
+    
+Other example, same script but dumps the produces models.
+
+::
+
+    ONNXRT_DUMP_PATH="llama_dort_" python -m onnxrt_backend_dev.llama.dort_bench --backend ort --device cuda
 """
 
 import time
@@ -15,6 +31,7 @@ from torch.onnx import _OrtBackend as OrtBackend
 from torch.onnx import _OrtBackendOptions as OrtBackendOptions
 from onnxrt_backend_dev.llama.llama_helper import get_llama_model
 from onnxrt_backend_dev.args import get_parsed_args
+from onnxrt_backend_dev.convert_helper import optimize_model_proto
 
 
 args = get_parsed_args(
@@ -26,7 +43,12 @@ args = get_parsed_args(
     warmup=5,
     repeat=5,
     mixed=(0, "mixed precision (based on autocast)"),
-    expose="backend,repeat,warmup,device,num_hidden_layers,mixed",
+    export=(
+        "",
+        "export the model with dynamo and torch.script, " "use this as a prefix",
+    ),
+    config=("default", "default or small to test"),
+    expose="backend,repeat,warmup,device,num_hidden_layers,mixed,export,config",
 )
 
 device = "cuda"
@@ -46,11 +68,28 @@ def make_aot_ort(dynamic: bool = False):
     return ort_backend, ort_backend
 
 
-model, example_args_collection = get_llama_model(
-    input_dims=[(2, 1024)] * (args.repeat + args.warmup),
-    _attn_implementation="eager",
-    num_hidden_layers=args.num_hidden_layers,
-)
+if args.config == "small":
+    model, example_args_collection = get_llama_model(
+        input_dims=[(2, 1024)] * (args.repeat + args.warmup),
+        _attn_implementation="eager",
+        num_hidden_layers=args.num_hidden_layers,
+        hidden_size=16,
+        vocab_size=1024,
+        intermediate_size=16,
+        max_position_embeddings=1024,
+        num_attention_heads=2,
+    )
+else:
+    model, example_args_collection = get_llama_model(
+        input_dims=[(2, 1024)] * (args.repeat + args.warmup),
+        _attn_implementation="eager",
+        num_hidden_layers=args.num_hidden_layers,
+        hidden_size=4096,
+        vocab_size=32000,
+        intermediate_size=11008,
+        max_position_embeddings=2048,
+        num_attention_heads=32,
+    )
 
 
 model = model.eval().to(args.device)
@@ -80,6 +119,37 @@ def loop_iteration(is_cuda, inputs, compiled_model):
     if is_cuda:
         torch.cuda.synchronize()
 
+
+if args.export:
+    providers = (
+        ["CPUExecutionProvider"]
+        if device == "cpu"
+        else ["CUDAExecutionProvider", "CPUExecutionProvider"]
+    )
+
+    filename = f"{args.export}.script.onnx"
+    print("export with torch.onnx.export to {filename!r}")
+    input_names = ["input{i}" for i in range(len(example_args_collection[0]))]
+    torch.onnx.export(model, *example_args_collection[0], filename, input_names)
+
+    ofilename = f"{args.export}.script.opt.onnx"
+    print("onnxruntime optimization to {ofilename!r}")
+    opts = onnxruntime.SessionOptions()
+    opts.optimized_model_filepath = ofilename
+    sess = onnxruntime.InferenceSession(filename, opts, providers=providers)
+
+    filename = f"{args.export}.dynamo.onnx"
+    print("export with torch.onnx.dynamo_export to {filename!r}")
+    export_output = torch.onnx.dynamo_export(model, *args)
+    optimized_model = optimize_model_proto(export_output.model_proto)
+    with open(filename, "wb") as f:
+        f.write(optimized_model.SerializeToString())
+
+    ofilename = f"{args.export}.dynamo.opt.onnx"
+    print("onnxruntime optimization to {ofilename!r}")
+    opts = onnxruntime.SessionOptions()
+    opts.optimized_model_filepath = ofilename
+    sess = onnxruntime.InferenceSession(filename, opts, providers=providers)
 
 print("warmup")
 warmup_times = []

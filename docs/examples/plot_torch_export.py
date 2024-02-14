@@ -72,6 +72,8 @@ from onnxrt_backend_dev.ext_test_case import get_figure
 from onnxrt_backend_dev.args import get_parsed_args
 from onnxrt_backend_dev.monitoring.benchmark import measure_time
 from onnxrt_backend_dev.monitoring.memory_peak import start_spying_on
+from onnxrt_backend_dev.ext_test_case import unit_test_going
+from onnxrt_backend_dev.convert_helper import optimize_model_proto
 from tqdm import tqdm
 
 has_cuda = has_cuda and torch.cuda.is_available()
@@ -202,7 +204,9 @@ class MyModelClass(nn.Module):
 
 
 def create_model_and_input(scenario=script_args.scenario):
-    if scenario == "middle":
+    if unit_test_going():
+        shape = [1, 1, 16, 16]
+    elif scenario == "middle":
         shape = [1, 1, 128, 128]
     elif scenario in (None, "small"):
         shape = [1, 1, 16, 16]
@@ -254,10 +258,7 @@ def export_dynopt(filename, model, *args):
             warnings.simplefilter("ignore")
             export_output = torch.onnx.dynamo_export(model, *args)
             model_onnx = export_output.model_proto
-
-            from onnxrewriter.optimizer import optimize
-
-            optimized_model = optimize(model_onnx)
+            optimized_model = optimize_model_proto(model_onnx)
             with open(filename, "wb") as f:
                 f.write(optimized_model.SerializeToString())
 

@@ -8,6 +8,7 @@ from onnxrt_backend_dev.ext_test_case import (
     ExtTestCase,
     ignore_warnings,
     skipif_ci_windows,
+    dump_dort_onnx,
 )
 
 
@@ -53,6 +54,18 @@ def pprint_output(obj):
 
 
 class TestLlamaMixed(ExtTestCase):
+
+    def _compare(self, a, b, atol, rtol):
+        self.assertEqual(type(a), type(b))
+        if isinstance(a, tuple):
+            self.assertEqual(len(a), len(b))
+            for i, j in zip(a, b):
+                self._compare(i, j, atol, rtol)
+        else:
+            import torch
+
+            torch.testing.assert_close(a, b, atol=atol, rtol=rtol)
+
     def _assert_model_numerically(
         self,
         model,
@@ -76,16 +89,28 @@ class TestLlamaMixed(ExtTestCase):
             for examples in example_args_collection_cpu
         ]
 
+        model2 = copy.deepcopy(model)
         compiled_model = torch.compile(
             copy.deepcopy(model),
             backend=dynamo_backend,
             dynamic=dynamic,
             fullgraph=fullgraph,
         )
+        compiled_model2 = torch.compile(
+            copy.deepcopy(model2),
+            backend=dynamo_backend,
+            dynamic=dynamic,
+            fullgraph=fullgraph,
+        )
 
-        one_example = None
         for example_args in example_args_collection:
-            one_example = example_args
+            not_mixed_result = model2(*example_args)
+            not_mixed_loss = not_mixed_result[0].sum()
+            not_mixed_loss.backward()
+
+            result2 = compiled_model2(*example_args)
+            loss_result2 = result2[0].sum()
+            loss_result2.backward()
 
             with torch.autocast(device_type="cuda", dtype=torch.float16):
                 baseline_result = model(*example_args)
@@ -93,28 +118,57 @@ class TestLlamaMixed(ExtTestCase):
                 loss_baseline = baseline_result[0].sum()
                 loss_result = result[0].sum()
 
+            baseline_result = tuple(b for b in baseline_result if b is not None)
+            result = tuple(b for b in result if b is not None)
+            self._compare(baseline_result, result, atol=atol, rtol=rtol)
+            torch.testing.assert_close(loss_baseline, loss_result, atol=atol, rtol=rtol)
+
             loss_baseline.backward()
             loss_result.backward()
-            for baseline_param, param in zip(
-                model.parameters(), compiled_model.parameters()
+            errors = {}
+            gradient = {}
+            n_params = 0
+            for not_mixed_param, not_mixed_param2, baseline_param, param in zip(
+                model2.parameters(),
+                compiled_model2.parameters(),
+                model.parameters(),
+                compiled_model.parameters(),
             ):
-                torch.testing.assert_close(
-                    baseline_param.grad, param.grad, atol=atol, rtol=rtol
+                gradient[n_params] = (
+                    not_mixed_param.grad,
+                    not_mixed_param2.grad,
+                    baseline_param.grad,
+                    param.grad,
                 )
-
-        # export to onnx
-        try:
-            torch.onnx.export(
-                copy.deepcopy(model), *one_example, f"{onnx_export}_script.onnx"
-            )
-        except Exception as e:
-            print("torch.onnx.export failed:", e)
-        try:
-            torch.onnx.dynamo_export(copy.deepcopy(model), *one_example).save(
-                f"{onnx_export}_dynamo.onnx"
-            )
-        except Exception as e:
-            print("torch.onnx.dynamo_export failed:", e)
+                n_params += 1
+                try:
+                    torch.testing.assert_close(
+                        baseline_param.grad, param.grad, atol=atol, rtol=rtol
+                    )
+                except Exception as e:
+                    errors[n_params - 1] = (
+                        e,
+                        baseline_param.grad,
+                        param.grad,
+                        baseline_param.name,
+                    )
+            if errors:
+                rows = ["not mixed=A, mixed=X, TORCH=T, DORT=D"]
+                for k, v in gradient.items():
+                    d1 = torch.abs(v[0] - v[2]).max()
+                    d2 = torch.abs(v[0] - v[1]).max()
+                    d3 = torch.abs(v[2] - v[3]).max()
+                    minis = " ".join([f"{_.min():1.2f}" for _ in v])
+                    maxis = " ".join([f"{_.max():1.2f}" for _ in v])
+                    rows.append(
+                        f"{k:02d}: TA/TM={d1:1.4f} TA/DA={d2:1.4f} TX/DX={d3:1.4f} shape: {v[2].shape} [{minis}-{maxis}]"
+                    )
+                for k, v in errors.items():
+                    diff = torch.abs(v[2] - v[1]).max()
+                    errs = str(v[0]).replace("\n", " --- ")
+                    rows.append(f"{k:02d}: name={v[3]!r} abs_err={diff} err={errs}")
+                msg = "\n".join(rows)
+                raise AssertionError(f"{n_params} gradient\n{msg}")
 
     def _assert_counting_information(
         self,
@@ -157,6 +211,8 @@ class TestLlamaMixed(ExtTestCase):
         expected_graph_break=0,
         assert_counting=True,
         device=None,
+        atol=1e-4,
+        rtol=1e-4,
     ):
         import torch
 
@@ -171,6 +227,8 @@ class TestLlamaMixed(ExtTestCase):
             fullgraph=fullgraph,
             onnx_export=onnx_export,
             device=device,
+            atol=atol,
+            rtol=rtol,
         )
 
         number_of_captured_graphs = 2 if test_backward else 1
@@ -197,6 +255,7 @@ class TestLlamaMixed(ExtTestCase):
     @skipif_ci_windows("torch.compile not supported on Windows")
     @unittest.skipIf(torch_min("2.2"), reason="missing kernel")
     @unittest.skipIf(not cuda_available(), reason="always works on cuda")
+    @dump_dort_onnx
     def test_ort_llama_mixed_cuda(self):
         from onnxrt_backend_dev.llama.llama_helper import (
             get_llama_model,
@@ -204,18 +263,21 @@ class TestLlamaMixed(ExtTestCase):
 
         input_dims = self.get_input_dims(False)
         model, example_args_collection = get_llama_model(
-            input_dims=input_dims, device="cuda"
+            input_dims=input_dims,
+            device="cuda",
+            _attn_implementation="eager",
         )
         self.common_test_model(
             model,
             example_args_collection,
             True,
             False,
-            fullgraph=False,
+            fullgraph=True,
             onnx_export="test_ort_llama_mixed",
             expected_graph_break=7,
             assert_counting=False,
             device="cuda",
+            rtol=5e-2,
         )
 
 

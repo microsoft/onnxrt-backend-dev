@@ -44,7 +44,7 @@ jobs:
       - name: Unit test and Coverage report
         run: |
           export PYTHONPATH=.
-          pytest --cov=./onnxrt_backend_dev/ --cov-report=xml --durations=10 --ignore-glob=**LONG*.py --ignore-glob=**notebook*.py
+          pytest -v --cov=./onnxrt_backend_dev/ --cov-report=xml --durations=10 --ignore-glob=**LONG*.py --ignore-glob=**notebook*.py
           export PYTHONPATH=
 
       - name: Upload coverage reports to Codecov

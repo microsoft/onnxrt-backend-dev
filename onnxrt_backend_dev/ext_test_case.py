@@ -68,8 +68,8 @@ def unit_test_going():
     Enables a flag telling the script is running while testing it.
     Avoids unit tests to be very long if used.
     """
-    going = int(os.environ.get("UNITTEST_GOING", 0))
-    return going == 1
+    going = int(os.environ.get("UNITTEST_GOING", "0"))
+    return going in (1, "1")
 
 
 def ignore_warnings(warns: List[Warning]) -> Callable:
@@ -218,3 +218,19 @@ def get_figure(ax: Any) -> Any:
     if len(ax.shape) == 2:
         return ax[0, 0].get_figure()
     raise RuntimeError(f"Unexpected shape {ax.shape} for axis.")
+
+
+def dump_dort_onnx(fn):
+    prefix = fn.__name__
+    folder = "dump_dort"
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+
+    def wrapped(self):
+        value = os.environ.get("ONNXRT_DUMP_PATH", None)
+        os.environ["ONNXRT_DUMP_PATH"] = os.path.join(folder, f"{prefix}_")
+        res = fn(self)
+        os.environ["ONNXRT_DUMP_PATH"] = value or ""
+        return res
+
+    return wrapped
