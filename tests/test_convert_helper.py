@@ -15,10 +15,20 @@ def has_cuda():
     return torch.cuda.is_available()
 
 
+def has_onnxrewriter():
+    try:
+        import onnxrewriter  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
+
+
 input_dims = ((2, 1024),)
 
 
 class TestConvertHelper(ExtTestCase):
+    @unittest.skipIf(not has_onnxrewriter(), "onnx-rewriter not installed")
     def test_optimize_llama(self):
         import torch
         from onnxrt_backend_dev.llama.llama_helper import get_llama_attention
