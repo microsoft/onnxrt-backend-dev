@@ -3,7 +3,7 @@ furo
 matplotlib
 mypy
 git+https://github.com/microsoft/onnxscript.git
-git+https://github.com/microsoft/onnx-rewriter.git
+# git+https://github.com/microsoft/onnx-rewriter.git
 openpyxl
 packaging
 pandas
